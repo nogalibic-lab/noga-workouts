@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173f5f">
+<title>האימונים שלי</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="topline"><div><h1>האימונים שלי</h1><div id="who" class="muted"></div></div><label class="datebox">תאריך<input id="date" type="date"></label></div>
+  <div class="programs"><button data-program="general">תוכנית כללית</button><button data-program="emphasis">תוכנית עם דגש</button></div>
+  <div id="tabs" class="tabs"></div>
+</header>
+<main>
+  <div id="notice" class="notice">טוענת…</div>
+  <div id="list"></div>
+  <section id="finish" class="finish hidden">
+    <h2>סיום האימון</h2>
+    <label>משך האימון בדקות <span class="optional">(אופציונלי)</span><input id="duration" inputmode="numeric" placeholder="למשל 55"></label>
+    <label>הערה כללית <span class="optional">(אופציונלי)</span><textarea id="sessionNotes" placeholder="איך הרגיש האימון?"></textarea></label>
+    <div id="ownerTools" class="owner hidden"><button id="guestBtn" class="secondary">יצירת קישור למשתמשת נוספת</button></div>
+  </section>
+</main>
+<div id="savebar" class="savebar hidden"><button id="saveBtn" class="primary">שמירת האימון</button><div id="status"></div></div>
+<script src="./app.js" defer></script>
+</body>
+</html>
