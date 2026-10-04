@@ -1,14 +1,24 @@
 /* Stable passwordless links. No credentials are bundled in this file. */
 (() => {
   'use strict';
-  const storageKey = 'noga-workouts:' + location.pathname + ':access';
+  const sessionKey = 'noga-workouts:' + location.pathname + ':access';
+  const persistentKey = 'noga-workouts:pwa-access';
   let activeToken = '';
-  const read = key => { try { return sessionStorage.getItem(key) || ''; } catch (_) { return ''; } };
-  const write = (key, value) => { try { sessionStorage.setItem(key, value); } catch (_) {} };
+
+  const readSession = key => { try { return sessionStorage.getItem(key) || ''; } catch (_) { return ''; } };
+  const writeSession = (key, value) => { try { sessionStorage.setItem(key, value); } catch (_) {} };
+  const readPersistent = () => { try { return localStorage.getItem(persistentKey) || ''; } catch (_) { return ''; } };
+  const writePersistentOnce = token => {
+    try {
+      if (!localStorage.getItem(persistentKey)) localStorage.setItem(persistentKey, token);
+    } catch (_) {}
+  };
+
   function linkFor(token) {
-    // Fragments survive bookmarks/copying and are not sent to the static host.
+    // The access key stays in the URL fragment, which is not sent to GitHub Pages.
     return location.origin + location.pathname + '#k=' + encodeURIComponent(token);
   }
+
   function explicitToken() {
     const query = new URLSearchParams(location.search);
     const fragment = new URLSearchParams(location.hash.slice(1));
@@ -16,14 +26,21 @@
     if (fragment.has('k')) return fragment.get('k') || '';
     return null;
   }
+
   function tokenFromUrl() {
     const explicit = explicitToken();
-    // An explicit link always wins; never silently open a different user.
-    const token = explicit !== null ? explicit.trim() : read(storageKey) || read('workoutKey');
+    // An explicit personal link always wins. The first valid link used on a device
+    // is also kept locally so an installed PWA can reopen without losing identity.
+    const token = explicit !== null
+      ? explicit.trim()
+      : readSession(sessionKey) || readSession('workoutKey') || readPersistent();
+
     activeToken = token;
     if (token) {
-      write(storageKey, token);
+      writeSession(sessionKey, token);
+      if (explicit !== null) writePersistentOnce(token);
       try { sessionStorage.removeItem('workoutKey'); } catch (_) {}
+
       const url = new URL(location.href);
       url.searchParams.delete('k');
       url.hash = 'k=' + encodeURIComponent(token);
@@ -31,6 +48,7 @@
     }
     return token;
   }
+
   function showLinkTools(token) {
     const who = document.querySelector('#who');
     if (!who || document.querySelector('#copyPersonalLink')) return;
@@ -54,10 +72,12 @@
     };
     who.append(document.createElement('br'), button);
   }
-  // Pasting a different fragment link into the same tab must not keep the old identity.
+
+  // Pasting a different personal link into the same tab must not keep the old identity.
   addEventListener('hashchange', () => {
     const token = explicitToken();
     if (token !== null && token.trim() !== activeToken) location.reload();
   });
+
   window.WorkoutAccess = Object.freeze({tokenFromUrl, linkFor, showLinkTools});
 })();
