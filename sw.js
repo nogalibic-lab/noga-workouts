@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v1';
+const CACHE = 'noga-workouts-shell-v2';
 const SHELL = [
   './',
   './index.html',
