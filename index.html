@@ -14,16 +14,16 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
-<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./styles.css?v=20261011-ui3">
 </head>
 <body>
 <header class="top">
   <div class="topline"><div><h1>האימונים שלי</h1><div id="who" class="muted"></div></div><label class="datebox">תאריך<input id="date" type="date"></label></div>
-  <div class="programs"><button data-program="general">תוכנית כללית</button><button data-program="emphasis">תוכנית עם דגש</button></div>
+  <div class="programs"><button data-program="general">כללית</button><button data-program="emphasis">דגש</button><button data-program="general_v2">כללית – מעודכנת</button><button data-program="emphasis_v2">דגש – מעודכנת</button></div>
   <div id="tabs" class="tabs"></div>
 </header>
 <main>
-  <div id="notice" class="notice">טוענת…</div>
+  <div id="notice" class="notice">טוענת…</div>\n  <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
   <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div>
   <div id="list"></div>
   <section id="finish" class="finish hidden">
@@ -34,8 +34,8 @@
   </section>
 </main>
 <div id="savebar" class="savebar hidden"><button id="saveBtn" class="primary">שמירת האימון</button><div id="status"></div></div>
-<script src="./access.js?v=20261008-autosave1" defer></script>
-<script src="./app.js?v=20261008-autosave1" defer></script>
-<script src="./pwa.js?v=20261008-autosave1" defer></script>
+<script src="./access.js?v=20261011-ui3" defer></script>
+<script src="./app.js?v=20261011-ui3" defer></script>
+<script src="./pwa.js?v=20261011-ui3" defer></script>
 </body>
 </html>
