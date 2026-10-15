@@ -50,5 +50,6 @@ $("#guestBtn").onclick=async()=>{const b=$("#guestBtn");if(b.disabled)return;con
 document.addEventListener("input",e=>{if(e.target.matches(".exercise input,.exercise textarea,#duration,#sessionNotes"))queueLocalDraft()});
 document.addEventListener("focusin",e=>{if(e.target.matches("#date")){clearTimeout(state.autoSaveTimer);persistLocalDraft()}});
 document.addEventListener("change",e=>{if(e.target.matches("#date")){clearTimeout(state.autoSaveTimer);state.activeDate=selectedDate();render();showDraftRecovery();return}if(e.target.matches(".exercise input,.exercise textarea,#duration,#sessionNotes"))queueLocalDraft()});
-window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal("#helpModal");closeModal("#introModal")}});\nwindow.addEventListener("pagehide",()=>{clearTimeout(state.autoSaveTimer);persistLocalDraft()});
+window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal("#helpModal");closeModal("#introModal")}});
+window.addEventListener("pagehide",()=>{clearTimeout(state.autoSaveTimer);persistLocalDraft()});
 boot();
