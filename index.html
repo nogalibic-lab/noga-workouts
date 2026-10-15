@@ -14,16 +14,31 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
-<link rel="stylesheet" href="./styles.css?v=20261011-ui3">
+<link rel="stylesheet" href="./styles.css?v=20261015-help1">
 </head>
 <body>
 <header class="top">
-  <div class="topline"><div><h1>האימונים שלי</h1><div id="who" class="muted"></div></div><label class="datebox">תאריך<input id="date" type="date"></label></div>
-  <div class="programs"><button data-program="general">כללית</button><button data-program="emphasis">דגש</button><button data-program="general_v2">כללית – מעודכנת</button><button data-program="emphasis_v2">דגש – מעודכנת</button></div>
+  <div class="topline">
+    <div>
+      <h1>האימונים שלי</h1>
+      <div id="who" class="muted"></div>
+      <div class="header-actions">
+        <button id="helpBtn" class="small utility" type="button">עזרה ?</button>
+        <button id="installBtn" class="small utility hidden" type="button">התקנה בנייד</button>
+      </div>
+    </div>
+    <label class="datebox">תאריך<input id="date" type="date"></label>
+  </div>
+  <div class="programs">
+    <button data-program="general_v2">כללית – מעודכנת</button>
+    <button data-program="emphasis_v2">דגש – מעודכנת</button>
+  </div>
   <div id="tabs" class="tabs"></div>
 </header>
+
 <main>
-  <div id="notice" class="notice">טוענת…</div>\n  <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
+  <div id="notice" class="notice">טוענת…</div>
+  <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
   <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div>
   <div id="list"></div>
   <section id="finish" class="finish hidden">
@@ -33,9 +48,76 @@
     <div id="ownerTools" class="owner hidden"><button id="guestBtn" class="secondary">יצירת קישור למשתמשת נוספת</button></div>
   </section>
 </main>
+
 <div id="savebar" class="savebar hidden"><button id="saveBtn" class="primary">שמירת האימון</button><div id="status"></div></div>
-<script src="./access.js?v=20261011-ui3" defer></script>
-<script src="./app.js?v=20261011-ui3" defer></script>
-<script src="./pwa.js?v=20261011-ui3" defer></script>
+
+<div id="introModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="modal-card intro-card">
+    <h2 id="introTitle">ברוכה הבאה</h2>
+    <p>האפליקציה ותוכניות האימון נבנו במקור עבור אישה בריאה עם ניסיון קודם באימוני כוח, שמתאמנת בערך 3–4 פעמים בשבוע. המטרה המרכזית: כוח, בריאות ותפקוד לטווח ארוך, תוך שמירה ופיתוח של מסת שריר.</p>
+    <p>התוכניות מבוססות על עקרונות מחקריים עדכניים של אימוני התנגדות: עבודה על כל קבוצות השרירים, נפח ותדירות סבירים לאורך השבוע, התקדמות הדרגתית, עבודה בדרך כלל קרוב לכשל אך לא עד כשל, והעדפה לתרגילים פשוטים ויציבים.</p>
+    <p><strong>האפליקציה נבנתה על ידי נגה ליבי כהן בעזרת GPT</strong>, כחלק מפרויקט אישי לתכנון ולתיעוד אימוני כוח.</p>
+    <div class="disclaimer">התוכניות אינן המלצה מקצועית אישית ואינן תחליף לייעוץ של מאמנת/מאמן מוסמכים, פיזיותרפיסטית או רופאה. יש להתאים את האימון למצב הבריאותי, לניסיון וליכולת האישית, ולהפסיק תרגיל שגורם לכאב.</div>
+    <div class="modal-actions">
+      <button id="introInstallBtn" class="secondary" type="button">איך מתקינים?</button>
+      <button id="introHelpBtn" class="secondary" type="button">הסבר מלא</button>
+      <button id="introCloseBtn" class="primary" type="button">הבנתי</button>
+    </div>
+  </div>
+</div>
+
+<div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="modal-card help-card">
+    <div class="modal-head">
+      <h2 id="helpTitle">איך משתמשים באפליקציה?</h2>
+      <button id="helpCloseBtn" class="small close-btn" type="button" aria-label="סגירה">✕</button>
+    </div>
+
+    <section>
+      <h3>מה מטרת האפליקציה?</h3>
+      <p>האפליקציה היא יומן אימוני כוח: היא מציגה תוכנית אימון, מאפשרת לתעד מה בוצע, ומציגה את הביצוע הקודם כדי לעזור בהתקדמות הדרגתית.</p>
+      <p>היא תוכננה במקור עבור אישה בוגרת, בריאה, עם ניסיון קודם באימוני כוח, שמתאמנת כ־3–4 פעמים בשבוע ומבקשת לשפר כוח, בריאות ותפקוד לטווח ארוך ולשמור או לפתח מסת שריר.</p>
+      <p>התוכניות נבנו לפי עקרונות מחקריים עדכניים: כיסוי של כל קבוצות השרירים, פיזור נפח האימון לאורך השבוע, רוב הסטים קרוב לכשל אך לא בהכרח עד כשל, התקדמות הדרגתית, ותרגילים פשוטים ויציבים. סופרסטים משמשים בעיקר כדי לקצר את האימון בלי לפגוע ככל האפשר באיכות הביצוע.</p>
+    </section>
+
+    <section>
+      <h3>איזו תוכנית לבחור?</h3>
+      <p><strong>כללית – מעודכנת:</strong> תוכנית פול־בודי מאוזנת שמטרתה כוח, בריאות וכיסוי של כל קבוצות השרירים.</p>
+      <p><strong>דגש – מעודכנת:</strong> אותה תשתית מלאה לכל הגוף, ובסוף האימון תוספת מכוונת ל<strong>טרייספס, בטן/ליבה והתקדמות במתח או במשיכה אנכית</strong>. הדגש קבוע מראש — זו אינה אפשרות לבחור דגש אחר.</p>
+      <p>A, B ו־C הם שלושת האימונים העיקריים. D הוא אימון רביעי אופציונלי. תרגילים שמסומנים <strong>“אם נשאר זמן”</strong> הם תוספת ולא הבסיס של האימון.</p>
+    </section>
+
+    <section>
+      <h3>מה ממלאים בכל תרגיל?</h3>
+      <p><strong>משקל / סיוע:</strong> המשקל שבו עבדת, או מידת הסיוע בתרגיל כמו מתח.</p>
+      <p><strong>חזרות / זמן:</strong> מה שבוצע בפועל בכל סט.</p>
+      <p><strong>RIR:</strong> כמה חזרות טובות לדעתך עוד היית יכולה לבצע לפני כשל. לדוגמה: RIR 2 = הרגשת שהיית יכולה לעשות בערך עוד שתי חזרות. ברוב הסטים היעד הוא בערך 1–3 חזרות “במיכל”.</p>
+      <p><strong>הערה:</strong> כל דבר שתרצי לזכור לפעם הבאה.</p>
+      <p><strong>✓:</strong> מסמן שהתרגיל בוצע ומאפיר את הכרטיס. אפשר לסמן ✓ גם בלי למלא את שאר הנתונים.</p>
+      <p><strong>“בפעם הקודמת”:</strong> מציג את הביצוע הקודם בתרגיל כדי לעזור לבחור עומס או יעד מתאים.</p>
+    </section>
+
+    <section>
+      <h3>שמירה</h3>
+      <p>הנתונים שאת מקלידה נשמרים אוטומטית כטיוטה במכשיר, כדי שלא יאבדו אם הדף נטען מחדש או נסגר. בסיום לחצי <strong>“שמירת האימון”</strong> כדי לשמור את האימון בהיסטוריה.</p>
+      <p>הקישור שקיבלת הוא קישור אישי לאפליקציה שלך. כדאי לשמור אותו ולא להעביר אותו לאחרות.</p>
+    </section>
+
+    <section id="helpInstall">
+      <h3>התקנה באנדרואיד</h3>
+      <p>מומלץ לפתוח את הקישור ב־Chrome. אם מופיע באפליקציה כפתור <strong>“התקנה בנייד”</strong>, לחצי עליו ואשרי את ההתקנה.</p>
+      <p>אם הכפתור אינו מופיע: פתחי ב־Chrome את תפריט ⋮ ובחרי <strong>Install app</strong> או <strong>Add to Home screen</strong> (השם משתנה מעט בין גרסאות). לאחר מכן האפליקציה תופיע במסך הבית כמו אפליקציה רגילה.</p>
+    </section>
+
+    <section>
+      <h3>חשוב לדעת</h3>
+      <div class="disclaimer">האפליקציה נבנתה על ידי נגה ליבי כהן בעזרת GPT לצורך אישי ושיתוף עם חברות. היא אינה שירות מקצועי, רפואי או טיפולי, ותוכניות האימון אינן המלצה מקצועית אישית. מי שיש לה מצב רפואי, כאב, פציעה, מגבלה או חוסר ניסיון באימוני כוח צריכה להתייעץ עם גורם מקצועי מתאים לפני ביצוע התוכנית.</div>
+    </section>
+  </div>
+</div>
+
+<script src="./access.js?v=20261015-help1" defer></script>
+<script src="./pwa.js?v=20261015-help1" defer></script>
+<script src="./app.js?v=20261015-help1" defer></script>
 </body>
 </html>
