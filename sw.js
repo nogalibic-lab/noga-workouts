@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v6';
+const CACHE = 'noga-workouts-shell-v7';
 const SHELL = [
   './',
   './index.html',
@@ -31,6 +31,9 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   // Never intercept Supabase/API traffic or any other cross-origin request.
   if (url.origin !== self.location.origin) return;
+  // The pull-up tracker has its own, narrower PWA scope and cache.
+  // Never intercept its pages from the strength-training app service worker.
+  if (url.pathname.startsWith(new URL('./pullups/', self.registration.scope).pathname)) return;
 
   event.respondWith(
     fetch(request)
