@@ -1,0 +1,22 @@
+{
+  "id": "/noga-workouts/pullups/",
+  "name": "בדרך למתח הראשון",
+  "short_name": "מתח",
+  "description": "יומן תרגולי מתח נפרד מאימוני הכוח",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f7f3",
+  "theme_color": "#173d35",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
