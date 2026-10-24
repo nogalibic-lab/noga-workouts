@@ -4,12 +4,16 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>בדרך למתח הראשון · נוגה</title>
 <meta name="theme-color" content="#173d35">
+<meta name="application-name" content="מעקב מתח אישי">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
 <style>
 :root{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#18342e;background:#f5f7f3}
 *{box-sizing:border-box}body{margin:0}main{max-width:780px;margin:auto;padding:20px 15px 80px}h1{font-size:28px;margin:4px 0}h2{font-size:20px;margin:4px 0 14px}p{line-height:1.55}.muted,small{color:#65776d}.mast{background:#173d35;color:white;padding:23px 20px 29px;border-radius:0 0 26px 26px}.mast .muted{color:#c6ddd1}.head-inner{max-width:760px;margin:auto}.pill{display:inline-block;border-radius:30px;background:#d4eddb;color:#244c3a;padding:6px 11px;font-size:12px;font-weight:700}.mast .pill{background:#d1ebde}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:18px 0}.tabs button{background:#e5ece5;color:#375648;border:0;padding:11px 5px;border-radius:12px}.tabs button.active{background:#173d35;color:white}.panel{background:white;border:1px solid #e2eae3;border-radius:18px;padding:17px;margin:13px 0;box-shadow:0 3px 13px #1a3b2710}.row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{background:#eff4ed;border-radius:12px;padding:13px}.metric strong{font-size:27px;display:block}.metric span{font-size:12px;color:#586e62}button,input,select,textarea{font:inherit}button{cursor:pointer;font-weight:700;border-radius:11px;border:1px solid #c9d9cb;background:#f5f8f4;color:#174e3d;padding:10px 14px}button.primary{background:#17664d;border-color:#17664d;color:#fff}button.secondary{background:white}button.danger{color:#a53333;border-color:#edc7c3;background:#fffafa}button:disabled{opacity:.5}input,select,textarea{width:100%;background:#fbfcfa;border:1px solid #bdcfc1;border-radius:10px;padding:11px;color:#263e31}input:focus,select:focus,textarea:focus{outline:2px solid #9cc4aa}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field{min-width:0}textarea{min-height:65px;resize:vertical}#sets{display:grid;gap:10px}.set{background:#f6f8f5;border:1px solid #dfebe0;padding:11px;border-radius:14px}.set-main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}.set-actions{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.set-actions strong{font-size:15px}.set-actions button{padding:5px 10px;font-size:12px}.hint{font-size:12px;color:#667970;margin:7px 0}.hidden{display:none!important}.status{padding:12px;border-radius:10px;background:#eff4ed;font-size:13px}.status.error{background:#ffefed;color:#a32b2b}.historyitem{border-bottom:1px solid #edf1eb;padding:12px 0}.historyitem:last-child{border:0}.historyitem strong{font-size:15px}.historyitem .row{align-items:center}.tag{background:#eef2e8;color:#435c41;border-radius:20px;font-size:12px;padding:3px 8px}.tiny{font-size:12px}.chart{display:flex;align-items:flex-end;gap:7px;min-height:130px;border-bottom:1px solid #dce8dd;padding:8px 0 0;direction:ltr}.chart-col{flex:1;min-width:0;display:flex;align-items:center;flex-direction:column;justify-content:flex-end;gap:4px;height:126px}.chart-bar{width:100%;max-width:38px;border-radius:7px 7px 0 0;background:#3b906d;min-height:3px}.chart-col small{font-size:10px;color:#667870}.history-actions{display:flex;gap:6px}.history-actions button{font-size:12px;padding:6px 10px}.note{color:#587165;font-size:13px;padding-top:6px}a{color:#126347}.intro{margin-top:10px;font-size:14px}.foot{text-align:center;color:#63786b;font-size:12px;margin-top:25px}.notice{background:#fff8df;border:1px solid #e8db9f;padding:11px;border-radius:12px;font-size:13px}.flexbuttons{display:flex;gap:8px;flex-wrap:wrap}@media(max-width:400px){.set-main{grid-template-columns:1fr 1fr}.set-main .field:first-child{grid-column:span 2}.grid{gap:7px}.panel{padding:14px}}
 </style>
 </head>
 <body>
+<nav style="padding:10px 16px;background:#e7efe5;border-bottom:1px solid #c9dccb;text-align:center"><a id="backToWorkouts" href="../" style="color:#104d38;font-weight:750;text-decoration:underline;text-underline-offset:3px">↩ חזרה לאפליקציית אימוני הכוח המלאה</a></nav>
 <header class="mast"><div class="head-inner"><span class="pill">מעקב מתח אישי</span><h1>בדרך למתח הראשון 💪</h1><div class="muted">מתרגלת, מתעדת, מתקדמת — חזרה נקייה אחת בכל פעם.</div></div></header>
 <main>
 <div id="loading" class="status">מתחברת לרישומים שלך...</div>
@@ -124,6 +128,7 @@ el.innerHTML='<div class="chart" role="img" aria-label="חזרות מלאות ל
 $("#refresh").onclick=async()=>{try{await reload();$("#loading").classList.add("hidden")}catch(e){alert(e.message)}};
 async function boot(){
 state.token=WorkoutAccess.tokenFromUrl();
+const back=$("#backToWorkouts"); if(back && state.token){const u=new URL("../",location.href);u.hash="k="+encodeURIComponent(state.token);back.href=u.href;}
 if(!state.token){$("#loading").className="status error";$("#loading").textContent="חסר קישור אישי. פתחי תחילה את האפליקציה הקיימת באמצעות הקישור האישי שלך, ואז חזרי למסך זה.";return}
 try{
 await reload();
@@ -132,5 +137,8 @@ reset(true);renderHistory();$("#loading").classList.add("hidden");$("#app").clas
 }catch(e){$("#loading").className="status error";$("#loading").textContent="לא ניתן לטעון את המעקב: "+e.message}
 }
 boot();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{}));}
 </script>
 </body></html>
