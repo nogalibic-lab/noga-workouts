@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>בדרך למתח הראשון · נוגה</title>
+<meta name="theme-color" content="#173d35">
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#18342e;background:#f5f7f3}
+*{box-sizing:border-box}body{margin:0}main{max-width:780px;margin:auto;padding:20px 15px 80px}h1{font-size:28px;margin:4px 0}h2{font-size:20px;margin:4px 0 14px}p{line-height:1.55}.muted,small{color:#65776d}.mast{background:#173d35;color:white;padding:23px 20px 29px;border-radius:0 0 26px 26px}.mast .muted{color:#c6ddd1}.head-inner{max-width:760px;margin:auto}.pill{display:inline-block;border-radius:30px;background:#d4eddb;color:#244c3a;padding:6px 11px;font-size:12px;font-weight:700}.mast .pill{background:#d1ebde}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:18px 0}.tabs button{background:#e5ece5;color:#375648;border:0;padding:11px 5px;border-radius:12px}.tabs button.active{background:#173d35;color:white}.panel{background:white;border:1px solid #e2eae3;border-radius:18px;padding:17px;margin:13px 0;box-shadow:0 3px 13px #1a3b2710}.row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{background:#eff4ed;border-radius:12px;padding:13px}.metric strong{font-size:27px;display:block}.metric span{font-size:12px;color:#586e62}button,input,select,textarea{font:inherit}button{cursor:pointer;font-weight:700;border-radius:11px;border:1px solid #c9d9cb;background:#f5f8f4;color:#174e3d;padding:10px 14px}button.primary{background:#17664d;border-color:#17664d;color:#fff}button.secondary{background:white}button.danger{color:#a53333;border-color:#edc7c3;background:#fffafa}button:disabled{opacity:.5}input,select,textarea{width:100%;background:#fbfcfa;border:1px solid #bdcfc1;border-radius:10px;padding:11px;color:#263e31}input:focus,select:focus,textarea:focus{outline:2px solid #9cc4aa}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field{min-width:0}textarea{min-height:65px;resize:vertical}#sets{display:grid;gap:10px}.set{background:#f6f8f5;border:1px solid #dfebe0;padding:11px;border-radius:14px}.set-main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}.set-actions{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.set-actions strong{font-size:15px}.set-actions button{padding:5px 10px;font-size:12px}.hint{font-size:12px;color:#667970;margin:7px 0}.hidden{display:none!important}.status{padding:12px;border-radius:10px;background:#eff4ed;font-size:13px}.status.error{background:#ffefed;color:#a32b2b}.historyitem{border-bottom:1px solid #edf1eb;padding:12px 0}.historyitem:last-child{border:0}.historyitem strong{font-size:15px}.historyitem .row{align-items:center}.tag{background:#eef2e8;color:#435c41;border-radius:20px;font-size:12px;padding:3px 8px}.tiny{font-size:12px}.chart{display:flex;align-items:flex-end;gap:7px;min-height:130px;border-bottom:1px solid #dce8dd;padding:8px 0 0;direction:ltr}.chart-col{flex:1;min-width:0;display:flex;align-items:center;flex-direction:column;justify-content:flex-end;gap:4px;height:126px}.chart-bar{width:100%;max-width:38px;border-radius:7px 7px 0 0;background:#3b906d;min-height:3px}.chart-col small{font-size:10px;color:#667870}.history-actions{display:flex;gap:6px}.history-actions button{font-size:12px;padding:6px 10px}.note{color:#587165;font-size:13px;padding-top:6px}a{color:#126347}.intro{margin-top:10px;font-size:14px}.foot{text-align:center;color:#63786b;font-size:12px;margin-top:25px}.notice{background:#fff8df;border:1px solid #e8db9f;padding:11px;border-radius:12px;font-size:13px}.flexbuttons{display:flex;gap:8px;flex-wrap:wrap}@media(max-width:400px){.set-main{grid-template-columns:1fr 1fr}.set-main .field:first-child{grid-column:span 2}.grid{gap:7px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<header class="mast"><div class="head-inner"><span class="pill">מעקב מתח אישי</span><h1>בדרך למתח הראשון 💪</h1><div class="muted">מתרגלת, מתעדת, מתקדמת — חזרה נקייה אחת בכל פעם.</div></div></header>
+<main>
+<div id="loading" class="status">מתחברת לרישומים שלך...</div>
+<div id="app" class="hidden">
+<div class="row"><div id="welcome" class="muted"></div><button class="secondary" id="refresh" type="button">רענון נתונים ↻</button></div>
+<div class="tabs"><button data-tab="record" class="active">תיעוד אימון</button><button data-tab="progress">התקדמות</button><button data-tab="history">היסטוריה</button></div>
+<section id="recordTab">
+<div class="panel"><h2 id="recordTitle">תרגול חדש</h2>
+<div class="grid">
+<div class="field"><label for="date">תאריך</label><input type="date" id="date"></div>
+<div class="field"><label for="kind">סוג התרגול</label><select id="kind"><option value="practice">תרגול קצר</option><option value="full">חלק מאימון כוח</option></select></div>
+</div>
+<p class="hint">חור 9 מספק יותר סיוע מחור 8; חור 1 קרוב לרצפה. חור 0 = ללא סיוע. לספור רק חזרות שהסנטר עבר בהן את המוט כחזרות מלאות.</p>
+<div id="sets"></div>
+<div class="flexbuttons" style="margin-top:11px"><button id="addSet" type="button">+ הוספת סט</button></div>
+<div style="margin-top:16px"><label for="notes">הערות (אופציונלי)</label><textarea id="notes" placeholder="איך הרגשת? האם כאב? האם הגומייה הרגישה שונה?"></textarea></div>
+<div class="flexbuttons" style="margin-top:14px"><button class="primary" id="save" type="button">שמירת האימון</button><button id="new" class="secondary hidden" type="button">אימון חדש</button></div>
+<div id="saveStatus" class="hidden status" style="margin-top:12px"></div>
+</div>
+<div class="notice">תוספת תרגול אינה חובה יומית. בימי תרגול קצרים עדיף לעצור לפני כשל, בלי לנסות להשלים אימונים שהוחמצו.</div>
+</section>
+<section id="progressTab" class="hidden">
+<div class="panel"><h2>התקדמות בתקופה האחרונה</h2><div class="grid" id="stats"></div></div>
+<div class="panel"><h2>חזרות מלאות באותו חור</h2><div class="field"><label for="holeFilter">השוואת רמת סיוע</label><select id="holeFilter"></select></div><div id="chartArea"></div><p class="hint">הגרף מציג את מספר החזרות המלאות בסט הטוב ביותר בכל תאריך, רק באותה דרגת סיוע ובתרגולים החדשים. חזרות חלקיות אינן נספרות כהצלחה.</p></div>
+<div class="panel"><h2>מה חשוב לבדוק?</h2><p class="intro">התקדמות היא יותר חזרות מלאות באותו חור, או ביצוע מספר דומה של חזרות בחור נמוך יותר. שינוי בין דרגות סיוע אינו בר־השוואה ישירה. השאירי מרווח להתאוששות.</p></div>
+</section>
+<section id="historyTab" class="hidden">
+<div class="panel"><div class="row"><h2>היסטוריית מתח</h2><span id="historyCount" class="tag"></span></div><div id="historyList"></div></div>
+<div class="panel"><h2>אימוני מתח קודמים מהאפליקציה הראשית</h2><p class="hint">הנתונים מוצגים לקריאה בלבד. רישומים חדשים באפליקציה הזו נשמרים בנפרד, כדי לא לשנות את האימונים המלאים.</p><div id="legacyList"></div></div>
+</section>
+</div>
+<div class="foot">האימונים נשמרים בחשבונך המאובטח · אפליקציה עצמאית למתח</div>
+</main>
+<script src="../access.js"></script>
+<script>
+"use strict";
+const API="https://efyyanjbgbpaohvkezes.supabase.co/functions/v1/pullup-api";
+const MAIN_API="https://efyyanjbgbpaohvkezes.supabase.co/functions/v1/workout-api";
+const $=s=>document.querySelector(s);
+const state={token:"",sessions:[],legacy:[],editing:null,busy:false};
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")};
+async function api(base,action,body){
+const res=await fetch(base+"?action="+action,{method:body?"POST":"GET",headers:{"x-workout-key":state.token,"Content-Type":"application/json"},...(body?{body:JSON.stringify(body)}:{})});
+let d={};try{d=await res.json()}catch{}if(!res.ok)throw Error(d.error||"לא הצלחנו להשלים את הבקשה");return d;
+}
+const status=(message,error=false)=>{const el=$("#saveStatus");el.className="status"+(error?" error":"");el.textContent=message};
+const hideStatus=()=>$("#saveStatus").classList.add("hidden");
+function selectTab(name){for(const t of ["record","progress","history"]){$("#"+t+"Tab").classList.toggle("hidden",name!==t);$('[data-tab="'+t+'"]').classList.toggle("active",name===t)}if(name==="progress")renderProgress();if(name==="history")renderHistory();}
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
+function setRow(data={}){const i=$("#sets").children.length;
+const el=document.createElement("div");el.className="set";
+el.innerHTML='<div class="set-actions"><strong>סט <span class="index">'+(i+1)+'</span></strong><button class="remove" type="button">הסרת סט</button></div><div class="set-main"><div class="field"><label>חור הגומייה</label><input class="hole" type="number" inputmode="numeric" min="0" max="30" value="'+esc(data.hole??9)+'"></div><div class="field"><label>חזרות מלאות</label><input class="full" type="number" inputmode="numeric" min="0" max="50" value="'+esc(data.full??"")+'" placeholder="0"></div><div class="field"><label>חזרות חלקיות</label><input class="partial" type="number" inputmode="numeric" min="0" max="50" value="'+esc(data.partial??0)+'"></div></div><div class="grid" style="margin-top:10px"><div class="field"><label>חזרות במלאי (RIR)</label><select class="rir"><option value="">לא צוין</option><option>0</option><option>1</option><option>2</option><option>3+</option><option>לא יודעת</option></select></div><div class="field"><label>הערת סט</label><input class="setnote" maxlength="160" placeholder="אופציונלי" value="'+esc(data.note??"")+'"></div></div>';
+el.querySelector(".rir").value=data.rir||"";
+el.querySelector(".remove").onclick=()=>{if($("#sets").children.length===1){status("נדרש לפחות סט אחד",true);return}el.remove();renumber();saveDraft()};
+el.querySelectorAll("input,select").forEach(f=>f.addEventListener("input",saveDraft));$("#sets").append(el);}
+function renumber(){[...$("#sets").children].forEach((x,i)=>x.querySelector(".index").textContent=i+1)}
+function collect(){return {id:state.editing?.id||undefined,revision:state.editing?.revision||0,performed_at:$("#date").value,session_type:$("#kind").value,notes:$("#notes").value,sets:[...$("#sets").children].map(e=>({hole:Number(e.querySelector(".hole").value),full:e.querySelector(".full").value===""?-1:Number(e.querySelector(".full").value),partial:Number(e.querySelector(".partial").value),rir:e.querySelector(".rir").value,note:e.querySelector(".setnote").value}))};}
+const DRAFT="noga-pullups:draft-v1";
+function saveDraft(){if(state.editing)return;try{localStorage.setItem(DRAFT,JSON.stringify(collect()))}catch{}}
+function clearDraft(){try{localStorage.removeItem(DRAFT)}catch{}}
+function reset(restore=false){state.editing=null;$("#recordTitle").textContent="תרגול חדש";$("#date").value=today();$("#kind").value="practice";$("#notes").value="";$("#sets").innerHTML="";$("#new").classList.add("hidden");hideStatus();if(restore){let d;try{d=JSON.parse(localStorage.getItem(DRAFT))}catch{}if(d&&Array.isArray(d.sets)&&d.sets.length){$("#date").value=d.performed_at||today();$("#kind").value=d.session_type||"practice";$("#notes").value=d.notes||"";d.sets.forEach(setRow);status("שוחזרה טיוטה מקומית שלא נשמרה בשרת");return}}setRow();setRow();}
+$("#addSet").onclick=()=>{setRow();saveDraft()};
+$("#date").onchange=saveDraft;$("#kind").onchange=saveDraft;$("#notes").oninput=saveDraft;
+$("#new").onclick=()=>{reset();selectTab("record")};
+function edit(s){state.editing=s;$("#recordTitle").textContent="עריכת אימון מ־"+s.performed_at;$("#date").value=s.performed_at;$("#kind").value=s.session_type;$("#notes").value=s.notes||"";$("#sets").innerHTML="";(s.sets||[]).forEach(setRow);$("#new").classList.remove("hidden");hideStatus();selectTab("record");scrollTo({top:0,behavior:"smooth"})}
+async function reload(){const d=await api(API,"list");state.sessions=d.sessions||[];$("#welcome").textContent="שלום, "+d.user.display_name;renderHistory();renderProgress();}
+$("#save").onclick=async()=>{if(state.busy)return;const payload=collect();if(payload.sets.some(s=>s.full<0)){status("יש למלא מספר חזרות מלאות בכל סט, גם אם הוא 0.",true);return}state.busy=true;$("#save").disabled=true;status("שומרת את האימון...");try{await api(API,"save",payload);clearDraft();await reload();reset();status("האימון נשמר בהצלחה ✓");selectTab("history")}catch(e){status(e.message+" · הטיוטה לא נמחקה.",true)}finally{state.busy=false;$("#save").disabled=false}};
+function fmtSet(s){const hole=Number(s.hole)===0?"ללא סיוע":"חור "+s.hole;return hole+" · "+s.full+" מלאות"+(s.partial?" + "+s.partial+" חלקיות":"")+(s.rir?" · RIR "+s.rir:"")+(s.note?" · "+s.note:"")}
+function renderHistory(){
+$("#historyCount").textContent=state.sessions.length+" תרגולים";
+const el=$("#historyList");el.replaceChildren();
+if(!state.sessions.length)el.innerHTML='<p class="muted">עוד לא נשמרו תרגולי מתח חדשים. התחילי ברישום של התרגול הבא שלך.</p>';
+for(const s of state.sessions){const box=document.createElement("article");box.className="historyitem";
+const totals=s.sets.reduce((a,b)=>a+Number(b.full||0),0);
+box.innerHTML='<div class="row"><strong>'+esc(s.performed_at)+'</strong><span class="tag">'+(s.session_type==="full"?"חלק מאימון":"תרגול קצר")+'</span></div><div class="note">'+esc(s.sets.length+" סטים · "+totals+" חזרות מלאות")+'</div><div class="note">'+s.sets.map(v=>esc(fmtSet(v))).join("<br>")+'</div>'+(s.notes?'<div class="note">הערה: '+esc(s.notes)+'</div>':'')+'<div class="history-actions" style="margin-top:9px"><button class="edit">עריכה</button><button class="danger delete">מחיקה</button></div>';
+box.querySelector(".edit").onclick=()=>edit(s);
+box.querySelector(".delete").onclick=async()=>{if(!confirm("למחוק את התרגול מ־"+s.performed_at+"? הפעולה אינה ניתנת לביטול."))return;try{await api(API,"delete",{id:s.id});await reload()}catch(e){alert(e.message)}};
+el.append(box);
+}
+const legacyEl=$("#legacyList");legacyEl.replaceChildren();
+if(!state.legacy.length)legacyEl.innerHTML='<p class="muted">אין רישומי מתח קודמים זמינים כרגע.</p>';
+for(const s of state.legacy){
+const sets=(s.sets||[]).filter(x=>x.exercise_key==="assisted_pullup"||/מתח/.test(x.exercise_name||""));
+if(!sets.length)continue;
+const box=document.createElement("article");box.className="historyitem";
+const note=s.exercise_notes?.assisted_pullup;
+box.innerHTML='<strong>'+esc(s.performed_at)+' · אימון '+esc(s.workout_code)+'</strong><div class="note">'+sets.map(x=>esc("סט "+x.set_number+": "+(x.load_text||"סיוע לא צוין")+" · "+(x.reps_text||"?")+" חזרות"+(x.rir_text?" · "+x.rir_text:""))).join("<br>")+'</div>'+(note?'<div class="note">הערה: '+esc(note)+'</div>':'');
+legacyEl.append(box);
+}
+}
+function renderProgress(){
+const s=state.sessions,total=s.reduce((a,v)=>a+v.sets.reduce((b,x)=>b+Number(x.full||0),0),0);
+const dates=new Set(s.map(x=>x.performed_at));let bestHole=null;
+for(const session of s)for(const set of session.sets||[])if(set.full>0 && (bestHole===null||set.hole<bestHole))bestHole=set.hole;
+$("#stats").innerHTML='<div class="metric"><strong>'+s.length+'</strong><span>תרגולים חדשים</span></div><div class="metric"><strong>'+dates.size+'</strong><span>ימי תרגול</span></div><div class="metric"><strong>'+total+'</strong><span>חזרות מלאות שנרשמו</span></div><div class="metric"><strong>'+(bestHole===null?"—":bestHole===0?"עצמאי":"חור "+bestHole)+'</strong><span>החור הנמוך ביותר עם חזרה מלאה</span></div>';
+const select=$("#holeFilter"),selected=select.value;
+const levels=[...new Set(s.flatMap(v=>v.sets.map(x=>Number(x.hole))))].sort((a,b)=>b-a);
+select.innerHTML=levels.map(h=>'<option value="'+h+'">'+(h===0?"ללא סיוע":"חור "+h)+'</option>').join("");
+select.value=levels.map(String).includes(selected)?selected:String(levels[0]??9);
+select.onchange=drawChart;drawChart();
+}
+function drawChart(){
+const h=Number($("#holeFilter").value);
+const perDay=new Map();
+for(const s of state.sessions)for(const v of s.sets){if(Number(v.hole)!==h)continue;perDay.set(s.performed_at,Math.max(perDay.get(s.performed_at)||0,Number(v.full||0)))}
+const data=[...perDay.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+const el=$("#chartArea");if(!data.length){el.innerHTML='<p class="muted">אין עדיין מדידות בדרגת הסיוע הזו.</p>';return}
+const max=Math.max(...data.map(x=>x[1]),1);
+el.innerHTML='<div class="chart" role="img" aria-label="חזרות מלאות לפי תאריך">'+data.map(([date,n])=>'<div class="chart-col"><strong class="tiny">'+n+'</strong><div class="chart-bar" style="height:'+Math.max(3,85*n/max)+'px"></div><small>'+esc(date.slice(5))+'</small></div>').join("")+'</div>';
+}
+$("#refresh").onclick=async()=>{try{await reload();$("#loading").classList.add("hidden")}catch(e){alert(e.message)}};
+async function boot(){
+state.token=WorkoutAccess.tokenFromUrl();
+if(!state.token){$("#loading").className="status error";$("#loading").textContent="חסר קישור אישי. פתחי תחילה את האפליקציה הקיימת באמצעות הקישור האישי שלך, ואז חזרי למסך זה.";return}
+try{
+await reload();
+try{const d=await api(MAIN_API,"history");state.legacy=(d.history||[]).filter(s=>(s.sets||[]).some(x=>x.exercise_key==="assisted_pullup"));}catch{ /* Prior history is optional, new tracking remains available */ }
+reset(true);renderHistory();$("#loading").classList.add("hidden");$("#app").classList.remove("hidden");
+}catch(e){$("#loading").className="status error";$("#loading").textContent="לא ניתן לטעון את המעקב: "+e.message}
+}
+boot();
+</script>
+</body></html>
