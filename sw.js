@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v8';
+const CACHE = 'noga-workouts-shell-v9';
 const SHELL = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const SHELL = [
   './access.js',
   './app.js',
   './extras.js',
+  './insights.js',
   './pwa.js',
   './manifest.webmanifest',
   './icon.svg'
