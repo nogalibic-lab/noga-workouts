@@ -32,3 +32,12 @@ main{max-width:760px;margin:auto;padding:12px 12px 100px}.notice,.card,.finish{b
 .setrow{grid-template-columns:28px 1.05fr .82fr 1.1fr auto}
 .past-week-count{font-size:18px;font-weight:800;margin:8px 0 12px}.past-week-list{display:grid;gap:8px}.past-week-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--soft);border-radius:10px;padding:9px 10px;font-size:13px}.past-week-row span{color:#536a75;white-space:nowrap}
 @media(max-width:560px){.weekly-head{align-items:flex-start;flex-direction:column}.weekly-head .small{width:100%}.setrow{grid-template-columns:25px 1fr .78fr 1.05fr}.copy-prev{grid-column:2 / 5;justify-self:start;padding:4px 7px}.past-week-row{align-items:flex-start;flex-direction:column;gap:2px}}
+
+/* Functional extras: optional recommendations and custom exercises */
+.extras-section{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px;margin:14px 0}
+.extras-section h2{margin:0 0 8px;font-size:18px;color:var(--blue)}.extras-section .secondary{width:100%;margin:10px 0}
+.recommendation{display:flex;gap:10px;justify-content:space-between;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:11px;margin:9px 0}
+.rec-label,.rec-detail,.rec-note{font-size:12px;color:#526b78;line-height:1.5;margin-top:3px}.rec-label{font-weight:700;color:var(--blue)}
+.recommendation button{flex:0 0 auto}.extra-added{background:#fbfcff;border-style:dashed}.remove-extra{margin-top:8px;color:#923939}
+#extraForm{border:1px solid var(--line);padding:12px;border-radius:10px;background:#f8fafb}#extraForm label{display:block;font-size:13px;margin-bottom:9px}#extraForm input,#extraForm select{width:100%;display:block;margin-top:4px;border:1px solid #cbd7dc;border-radius:9px;padding:9px;background:#fff}
+.extra-actions{display:flex;gap:8px}#editSavedWorkout{display:block;width:100%;margin:10px 0}#extraError:empty{display:none}
