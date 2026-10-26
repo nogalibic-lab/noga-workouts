@@ -153,8 +153,12 @@
       e.preventDefault();
       const name = $("#extraName").value.trim().slice(0,70);
       if (!name) { $("#extraError").textContent = "יש להזין שם לתרגיל."; return; }
-      const key = "custom_" + crypto.randomUUID().replace(/-/g,"").slice(0,16);
-      if (add({k:key,n:name,m:$("#extraMetric").value,s:Number($("#extraSetCount").value),r:"לפי הצורך"})) {
+      const metric = $("#extraMetric").value;
+      const identity = (name.normalize("NFKC").toLowerCase() + "|" + metric);
+      let hash = 2166136261;
+      for (let i=0;i<identity.length;i++) hash = Math.imul(hash ^ identity.charCodeAt(i),16777619);
+      const key = "custom_" + (hash >>> 0).toString(16);
+      if (add({k:key,n:name,m:metric,s:Number($("#extraSetCount").value),r:"לפי הצורך"})) {
         $("#extraForm").reset();
         $("#extraForm").classList.add("hidden");
       }
