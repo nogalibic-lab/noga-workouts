@@ -14,7 +14,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
-<link rel="stylesheet" href="./styles.css?v=20261023-week1">
+<link rel="stylesheet" href="./styles.css?v=20261026-func1">
 </head>
 <body>
 <header class="top">
@@ -47,6 +47,22 @@
   <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
   <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div>
   <div id="list"></div>
+  <section id="extrasSection" class="extras-section hidden">
+    <h2>תוספות פונקציונליות — אם נשאר זמן</h2>
+    <p class="muted" id="extraExplain"></p>
+    <div id="extraRecommendations"></div>
+    <div id="extraCards"></div>
+    <button type="button" class="secondary" id="showExtraForm">+ הוספת תרגיל לבחירתי</button>
+    <p id="extraError" class="bad" role="alert"></p>
+    <form id="extraForm" class="hidden">
+      <label>שם התרגיל<input id="extraName" maxlength="70" required placeholder="למשל: הליכת מכרעים"></label>
+      <label>אופן המדידה<select id="extraMetric"><option value="reps">חזרות</option><option value="reps_per_side">חזרות לכל צד</option><option value="seconds">שניות</option><option value="seconds_per_side">שניות לכל צד</option><option value="distance">מרחק במטרים</option></select></label>
+      <label>סטים<select id="extraSetCount"><option value="2">2</option><option value="1">1</option><option value="3">3</option><option value="4">4</option></select></label>
+      <div class="extra-actions"><button class="primary" type="submit">הוספה לאימון</button><button class="small" type="button" id="cancelExtraForm">ביטול</button></div>
+    </form>
+    <p class="muted">אין חובה לבצע תוספות. התרגילים שתבחרי יישמרו כחלק מהאימון, גם אם תפתחי אותו שוב לעריכה.</p>
+  </section>
+  <button id="editSavedWorkout" class="secondary hidden" type="button">עריכת אימון שמור</button>
   <section id="finish" class="finish hidden">
     <h2>סיום האימון</h2>
     <label>משך האימון בדקות <span class="optional">(אופציונלי)</span><input id="duration" inputmode="numeric" placeholder="למשל 55"></label>
@@ -106,7 +122,7 @@
     </section>
 
     <section>
-      <h3>שמירה</h3>
+      <h3>תוספות פונקציונליות ותרגיל חופשי</h3><p>בסוף האימון מופיעות שלוש הצעות לתוספות על סמך התרגילים שתועדו באימונים האחרונים. אפשר לבחור הצעה או להוסיף כל תרגיל אחר באמצעות “הוספת תרגיל לבחירתי”. ההצעות אופציונליות.</p><p>כדי להוסיף תרגילים לאימון שכבר נשמר, בחרי את התאריך והתוכנית המתאימים ולחצי “עריכת האימון השמור”. לאחר העריכה לחצי שוב “שמירת האימון”.</p><h3>שמירה</h3>
       <p>הנתונים שאת מקלידה נשמרים אוטומטית כטיוטה במכשיר, כדי שלא יאבדו אם הדף נטען מחדש או נסגר. בסיום לחצי <strong>“שמירת האימון”</strong> כדי לשמור את האימון בהיסטוריה.</p>
       <p>הקישור שקיבלת הוא קישור אישי לאפליקציה שלך. כדאי לשמור אותו ולא להעביר אותו לאחרות.</p>
     </section>
@@ -136,6 +152,7 @@
 
 <script src="./access.js?v=20261023-week1" defer></script>
 <script src="./pwa.js?v=20261023-week1" defer></script>
-<script src="./app.js?v=20261023-week1" defer></script>
+<script src="./extras.js?v=20261026-func1" defer></script>
+<script src="./app.js?v=20261026-func1" defer></script>
 </body>
 </html>
