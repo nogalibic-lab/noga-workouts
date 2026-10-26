@@ -91,6 +91,7 @@
     remove.textContent = "הסרת תרגיל";
     remove.setAttribute("aria-label", "הסרת " + meta.n);
     card.append(remove);
+    const insight=document.createElement("div");insight.className="progress-insight";const data=window.WorkoutInsights?.progression(meta,hooks.history,{date:hooks.date,sessionId:hooks.sessionId});if(data){const t=document.createElement("strong");t.textContent=data.title;insight.append(t);for(const v of [data.history,data.comparison,data.guidance])if(v){const p=document.createElement("p");p.textContent=v;insight.append(p)}card.append(insight)}
     remove.addEventListener("click", () => {
       const hasValues = [...card.querySelectorAll(".setrow input,.exercise-note")].some(i => i.value.trim()) || !!card.querySelector(".complete-toggle:checked");
       if (hasValues && !window.confirm("להסיר את התרגיל ואת הנתונים שהוזנו בו מהאימון הנוכחי?")) return;
@@ -117,6 +118,7 @@
   }
   function refresh() {
     if (!hooks) return;
+    document.querySelectorAll(".extra-added").forEach(card=>{const meta=selected.find(x=>x.k===card.dataset.extra),box=card.querySelector(".progress-insight");if(!meta||!box||!window.WorkoutInsights)return;const d=window.WorkoutInsights.progression(meta,hooks.history,{date:hooks.date,sessionId:hooks.sessionId});box.replaceChildren();const title=document.createElement("strong");title.textContent=d.title;box.append(title);for(const val of [d.history,d.comparison,d.guidance])if(val){const p=document.createElement("p");p.textContent=val;box.append(p)}});
     const recent = hooks.history.filter(s => (s.sets || []).length || (s.completed_exercises || []).length).slice(0,6);
     const inPlan = new Set(hooks.program.map(x => x.exercise_key));
     const used = new Set(selected.map(x => x.k));
