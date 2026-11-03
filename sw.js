@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v9';
+const CACHE = 'noga-workouts-shell-v10-cardio';
 const SHELL = [
   './',
   './index.html',
@@ -7,6 +7,9 @@ const SHELL = [
   './app.js',
   './extras.js',
   './insights.js',
+  './cardio-model.js',
+  './cardio.js',
+  './cardio.css',
   './pwa.js',
   './manifest.webmanifest',
   './icon.svg'
@@ -21,7 +24,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => key.startsWith('noga-workouts-shell-') && key !== CACHE).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -47,10 +50,11 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(async () => {
-        const cached = await caches.match(request);
+        const cached = await caches.match(request, {ignoreSearch:true});
         if (cached) return cached;
         if (request.mode === 'navigate') return caches.match('./index.html');
         throw new Error('offline');
       })
   );
 });
+
