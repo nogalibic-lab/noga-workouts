@@ -15,6 +15,7 @@
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
 <link rel="stylesheet" href="./styles.css?v=20261026-insights1">
+<link rel="stylesheet" href="./cardio.css?v=20261103-cardio1">
 </head>
 <body>
 <header class="top">
@@ -34,7 +35,7 @@
     <button data-program="emphasis_v2">דגש – מעודכנת</button>
   </div>
   <div class="week-mode" aria-label="מספר אימונים השבוע">
-    <span>אימונים השבוע:</span>
+    <span>אימוני כוח השבוע:</span>
     <button type="button" data-week-mode="2">2</button>
     <button type="button" data-week-mode="3">3</button>
     <button type="button" data-week-mode="4">4</button>
@@ -45,6 +46,33 @@
 <main>
   <div id="notice" class="notice">טוענת…</div>
   <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
+  <section id="cardioPanel" class="cardio-panel hidden" aria-labelledby="cardioTitle">
+    <div class="cardio-head"><h2 id="cardioTitle">ריצה ואירובי</h2><button id="cardioRefresh" class="small" type="button">רענון</button></div>
+    <div class="cardio-week-nav"><button id="cardioPrevWeek" class="small" type="button" aria-label="השבוע הקודם">הקודם</button><span id="cardioRange"></span><button id="cardioNextWeek" class="small" type="button" aria-label="השבוע הבא">הבא</button></div>
+    <strong id="cardioSummaryText">טוענת את הסיכום…</strong>
+    <progress id="cardioProgress" max="75" value="0" aria-label="התקדמות ליעד האירובי השבועי"></progress>
+    <p id="cardioTotals" class="muted"></p><p id="cardioGoal" class="muted"></p>
+    <details><summary>איך נספרות הדקות?</summary><p class="muted">היעד הוא 75 דקות בעצימות גבוהה או שווה ערך בשבוע. דקה בעצימות גבוהה נספרת כדקה ליעד; שתי דקות מתונות נספרות כדקה. דקות קלות מתועדות, אך אינן נספרות ליעד הזה. בעצימות מתונה אפשר לדבר אך קשה לשיר; בעצימות גבוהה אפשר לומר רק כמה מילים לפני נשימה. הדופק הוא מידע נוסף ואינו קובע אוטומטית את העצימות.</p></details>
+    <div id="cardioCheckpoint" aria-live="polite"></div>
+    <p id="cardioLoadStatus" class="muted" role="status"></p>
+    <details id="cardioEntry"><summary>+ תיעוד ריצה / HIIT</summary>
+      <form id="cardioForm">
+        <h3 id="cardioFormTitle">תיעוד ריצה או אירובי</h3>
+        <div class="cardio-form-grid">
+          <label>תאריך<input id="cardioDate" type="date" required></label>
+          <label>סוג פעילות<select id="cardioType"><option value="run">ריצה</option><option value="hiit_run">HIIT בריצה</option><option value="hiit_rope">HIIT בדילגית</option><option value="walk">הליכה נמרצת</option><option value="other">אירובי אחר</option></select></label>
+          <label><span id="cardioDurationLabel">דקות ריצה בפועל</span><input id="cardioDuration" type="number" inputmode="decimal" min="0.1" max="300" step="0.1" placeholder="למשל 10" required></label>
+          <label>העצימות בפועל<select id="cardioIntensity" required><option value="">בחירת עצימות</option><option value="vigorous">גבוהה — רק כמה מילים ברצף</option><option value="moderate">מתונה — אפשר לנהל שיחה</option><option value="light">קלה — נשימה רגועה</option><option value="mixed">מעורבת / הפוגות</option></select></label>
+        </div>
+        <p id="cardioDurationHint" class="muted"></p>
+        <div id="cardioMixed" class="cardio-mixed hidden"><p class="muted">יש להזין את החלוקה שבוצעה בפועל. התאוששות נחשבת מתונה רק אם הרגישה כך; אין לספור אותה אוטומטית כמאמץ גבוה.</p><div class="cardio-form-grid"><label>דקות בעצימות גבוהה<input id="cardioVigorous" type="number" inputmode="decimal" min="0" max="300" step="0.1" placeholder="למשל 6"></label><label>דקות בעצימות מתונה<input id="cardioModerate" type="number" inputmode="decimal" min="0" max="300" step="0.1" placeholder="אפשר להשאיר ריק"></label></div></div>
+        <details><summary>דופק והערה — לא חובה</summary><div class="cardio-form-grid"><label>דופק ממוצע<input id="cardioAvg" type="number" inputmode="numeric" min="30" max="240" step="1"></label><label>דופק מרבי<input id="cardioMax" type="number" inputmode="numeric" min="30" max="240" step="1"></label></div><label>הערה<input id="cardioNotes" maxlength="1500" placeholder="למשל: ריצה עם הכלבה, הרגשה והתאוששות"></label></details>
+        <div class="cardio-form-actions"><button id="cardioSubmit" class="primary" type="submit">שמירת אירובי</button><button id="cardioCancel" class="secondary" type="button">סגירה / ביטול טיוטה</button></div>
+      </form>
+    </details>
+    <p id="cardioStatus" class="muted cardio-status" role="status" aria-live="polite"></p>
+    <details><summary>האימונים שתועדו השבוע</summary><div id="cardioHistory"></div></details>
+  </section>
   <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div>
   <div id="list"></div>
   <section id="extrasSection" class="extras-section hidden">
@@ -154,6 +182,9 @@
 <script src="./pwa.js?v=20261023-week1" defer></script>
 <script src="./insights.js?v=20261026-insights1" defer></script>
 <script src="./extras.js?v=20261026-insights1" defer></script>
-<script src="./app.js?v=20261026-insights1" defer></script>
+<script src="./cardio-model.js?v=20261103-cardio1" defer></script>
+<script src="./cardio.js?v=20261103-cardio1" defer></script>
+<script src="./app.js?v=20261103-cardio1" defer></script>
 </body>
 </html>
+
