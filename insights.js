@@ -5,7 +5,7 @@
   const META_SLOT = "__noga_extras_v1__";
   const CATEGORIES = [
     {id:"carry", label:"נשיאת משקל",
-      keys:["farmer_carry","suitcase_carry"],
+      keys:["farmer_carry","farmer_carry_distance","suitcase_carry"],
       names:[/farmer.?s?\s*(?:carry|walk)/i,/suitcase\s*carry/i,/הליכת חקלאי/,/נשיאת משקל/]},
     {id:"stability", label:"יציבות ושליטת ליבה",
       keys:["side_plank","pallof_press","single_leg_balance","dead_bug"],
@@ -38,10 +38,13 @@
       if (!Array.isArray(metadata)) metadata=[];
     } catch (_) { metadata=[]; }
     const byKey=new Map(metadata.map(x=>[String(x.k||""),String(x.n||"")]));
+    let ui={};try{ui=JSON.parse(session?.exercise_notes?.__noga_ui_v3__||"{}");}catch{}
+    const extras=ui.extras||[];
     for (const keyValue of session?.completed_exercises || []) {
-      const key=String(keyValue);
-      if (key === META_SLOT || !key) continue;
-      if (!found.has(key)) found.set(key,{key,name:byKey.get(key)||""});
+      const slot=String(keyValue),extra=extras.find(e=>e.target===slot);
+      const key=ui.variants?.[slot]||extra?.key||slot;
+      if (key.startsWith("__") || key === META_SLOT || !key) continue;
+      if (!found.has(key)) found.set(key,{key,name:byKey.get(key)||extra?.name||root.WorkoutProgram?.catalog[key]?.exercise_name||""});
     }
     return [...found.values()];
   }
@@ -114,7 +117,7 @@
     const hasFailure=rir.some(x=>x<=0);
     const allValid=rows.length>=meta.s && values.length===rows.length && values.every(Number.isFinite);
     const allAtUpper=allValid && !!upper && values.every(x=>x>=upper.upper);
-    const anyNote=[last.notes,last.exercise_notes?.[meta.k],...rows.map(x=>x.notes)].filter(filled).join(" ");
+    const anyNote=[last.notes,last.exercise_notes?.[meta.k],...rows.map(x=>last.exercise_notes?.[x.slot_id]),...rows.map(x=>x.notes)].filter(filled).join(" ");
     let guidance;
     if (/כאב|pain|סחרח|dizz/i.test(anyNote)) {
       guidance="בתיעוד הקודם הופיע כאב או סימפטום שדורש תשומת לב. אין להעלות עומס לפני בירור והתאמת התרגיל.";
@@ -125,7 +128,7 @@
     } else if (allAtUpper && upper.hasRange) {
       guidance=meta.m.startsWith("seconds")
         ? "הושג הקצה העליון של טווח הזמן. אם היציבה והשליטה נשמרו בקלות, אפשר לשקול עלייה קטנה בעומס; אין צורך להאריך זמן בלי גבול."
-        : "הושג הקצה העליון של טווח החזרות. אם הטכניקה נשמרה ונשארו כ־1–3 חזרות אפשריות, אפשר לשקול עלייה קטנה במשקל בפעם הבאה.";
+        : (meta.m==="distance"?"הושג הקצה העליון של טווח המרחק. אם הנשיאה יציבה והמאמץ מתאים, אפשר לשקול עלייה קטנה במשקל.":"הושג הקצה העליון של טווח החזרות. אם הטכניקה נשמרה ונשארו כ־1–3 חזרות אפשריות, אפשר לשקול עלייה קטנה במשקל בפעם הבאה.");
     } else if (allAtUpper) {
       guidance="הושג יעד הביצוע הרשום. אם גם באימונים הבאים החזרות יהיו יציבות והמאמץ סביר, אפשר לשקול תוספת קטנה לעומס; אין חובה להוסיף עכשיו.";
     } else if (meta.m==="distance") {

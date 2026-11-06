@@ -1,11 +1,11 @@
-const CACHE = 'noga-workouts-shell-v10-cardio';
+const CACHE = 'noga-workouts-shell-v11-rolling';
 const SHELL = [
   './',
   './index.html',
   './styles.css',
   './access.js',
   './app.js',
-  './extras.js',
+  './program.js',
   './insights.js',
   './cardio-model.js',
   './cardio.js',

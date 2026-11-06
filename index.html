@@ -14,38 +14,17 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
-<link rel="stylesheet" href="./styles.css?v=20261026-insights1">
+<link rel="stylesheet" href="./styles.css?v=20261105-rolling1">
 <link rel="stylesheet" href="./cardio.css?v=20261103-cardio1">
 </head>
-<body>
+<body data-view="strength">
 <header class="top">
-  <div class="topline">
-    <div>
-      <h1>האימונים שלי</h1>
-      <div id="who" class="muted"></div>
-      <div class="header-actions">
-        <button id="helpBtn" class="small utility" type="button">עזרה ?</button>
-        <button id="installBtn" class="small utility hidden" type="button">התקנה בנייד</button>
-      </div>
-    </div>
-    <label class="datebox">תאריך<input id="date" type="date"></label>
-  </div>
-  <div class="programs">
-    <button data-program="general_v2">כללית – מעודכנת</button>
-    <button data-program="emphasis_v2">דגש – מעודכנת</button>
-  </div>
-  <div class="week-mode" aria-label="מספר אימונים השבוע">
-    <span>אימוני כוח השבוע:</span>
-    <button type="button" data-week-mode="2">2</button>
-    <button type="button" data-week-mode="3">3</button>
-    <button type="button" data-week-mode="4">4</button>
-  </div>
-  <div id="tabs" class="tabs"></div>
+ <div class="topline"><div><h1>האימונים שלי</h1><div id="who" class="muted"></div><div class="header-actions"><button id="helpBtn" class="small utility" type="button">עזרה</button><button id="adaptationsBtn" class="small utility" type="button">התאמות אישיות ולמתחילות</button><button id="installBtn" class="small utility hidden" type="button">התקנה בנייד</button></div></div><label class="datebox" id="dateBox">תאריך<input id="date" type="date"></label></div>
+ <nav class="screen-nav" aria-label="בחירת מסך"><button id="strengthNav" type="button" class="active">אימוני כוח</button><button id="cardioNav" type="button">אירובי</button></nav>
+ <div id="strengthControls"><p id="sequence" class="sequence"></p><div id="tabs" class="tabs"></div></div>
 </header>
-
-<main>
-  <div id="notice" class="notice">טוענת…</div>
-  <section id="weeklySummary" class="weekly-summary hidden" aria-live="polite"></section>
+<main><div id="notice" class="notice" role="status">טוענת…</div>
+ <div id="cardioScreen" class="hidden"><button id="backFromCardio" type="button" class="small">חזרה לאימון כוח</button>
   <section id="cardioPanel" class="cardio-panel hidden" aria-labelledby="cardioTitle">
     <div class="cardio-head"><h2 id="cardioTitle">ריצה ואירובי</h2><button id="cardioRefresh" class="small" type="button">רענון</button></div>
     <div class="cardio-week-nav"><button id="cardioPrevWeek" class="small" type="button" aria-label="השבוע הקודם">הקודם</button><span id="cardioRange"></span><button id="cardioNextWeek" class="small" type="button" aria-label="השבוע הבא">הבא</button></div>
@@ -73,118 +52,36 @@
     <p id="cardioStatus" class="muted cardio-status" role="status" aria-live="polite"></p>
     <details><summary>האימונים שתועדו השבוע</summary><div id="cardioHistory"></div></details>
   </section>
-  <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div>
+</div>
+ <div id="strengthScreen">
+  <section class="weekly-summary"><span id="weeklyCount"></span><div class="history-actions"><button id="pastWeekBtn" type="button" class="small">סקירת השבוע החולף</button><button id="historyBtn" type="button" class="small">היסטוריית אימונים</button></div></section>
+  <div id="draftRecovery" class="draft-recovery hidden" aria-live="polite"></div><div id="editBanner" class="notice hidden"></div>
+  <div class="warmup"><strong>חימום</strong><span>כ־5 דקות פעילות כללית וסטי הכנה לפי הצורך</span><button id="restoreImpact" type="button" class="small hidden">הוספת הקפיצות בחזרה</button></div>
   <div id="list"></div>
-  <section id="extrasSection" class="extras-section hidden">
-    <h2>תוספות פונקציונליות — אם נשאר זמן</h2>
-    <p class="muted" id="extraExplain"></p>
-    <div id="extraRecommendations"></div>
-    <div id="extraCards"></div>
-    <button type="button" class="secondary" id="showExtraForm">+ הוספת תרגיל לבחירתי</button>
-    <p id="extraError" class="bad" role="alert"></p>
-    <form id="extraForm" class="hidden">
-      <label>שם התרגיל<input id="extraName" maxlength="70" required placeholder="למשל: הליכת מכרעים"></label>
-      <label>אופן המדידה<select id="extraMetric"><option value="reps">חזרות</option><option value="reps_per_side">חזרות לכל צד</option><option value="seconds">שניות</option><option value="seconds_per_side">שניות לכל צד</option><option value="distance">מרחק במטרים</option></select></label>
-      <label>סטים<select id="extraSetCount"><option value="2">2</option><option value="1">1</option><option value="3">3</option><option value="4">4</option></select></label>
-      <div class="extra-actions"><button class="primary" type="submit">הוספה לאימון</button><button class="small" type="button" id="cancelExtraForm">ביטול</button></div>
-    </form>
-    <p class="muted">אין חובה לבצע תוספות. התרגילים שתבחרי יישמרו כחלק מהאימון, גם אם תפתחי אותו שוב לעריכה.</p>
-  </section>
-  <button id="editSavedWorkout" class="secondary hidden" type="button">עריכת אימון שמור</button>
-  <section id="finish" class="finish hidden">
-    <h2>סיום האימון</h2>
-    <label>משך האימון בדקות <span class="optional">(אופציונלי)</span><input id="duration" inputmode="numeric" placeholder="למשל 55"></label>
-    <label>הערה כללית <span class="optional">(אופציונלי)</span><textarea id="sessionNotes" placeholder="איך הרגיש האימון?"></textarea></label>
-    <div id="ownerTools" class="owner hidden"><button id="guestBtn" class="secondary">יצירת קישור למשתמשת נוספת</button></div>
-  </section>
+  <section id="extrasSection" class="extras-section"><h2>תוספות — אם נשאר כוח וזמן</h2><p class="muted">שתי הצעות שמשלימות את האימון. אפשר לבחור גם בלי לבצע את שתיהן.</p><div id="extraRecommendations"></div><h3>עד שני תרגילים נוספים לבחירתך</h3><div class="choice-row"><label class="sr-only" for="extraChoice">בחירת תרגיל נוסף</label><select id="extraChoice"></select><button id="addChoice" type="button" class="small">הוספה</button></div><div id="selectedExtras"></div><div id="extraCards"></div></section>
+  <section id="finish" class="finish hidden"><h2>סיום האימון</h2><label>משך האימון בדקות <span class="optional">(אופציונלי)</span><input id="duration" inputmode="numeric" placeholder="למשל 75"></label><label>הערה כללית <span class="optional">(אופציונלי)</span><textarea id="sessionNotes" placeholder="איך הרגיש האימון?"></textarea></label><div id="ownerTools" class="owner hidden"><button id="guestBtn" class="secondary" type="button">יצירת קישור למשתמשת נוספת</button></div></section>
+ </div>
 </main>
-
-<div id="savebar" class="savebar hidden"><button id="saveBtn" class="primary">שמירת האימון</button><div id="status"></div></div>
-
-<div id="introModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-  <div class="modal-card intro-card">
-    <h2 id="introTitle">ברוכה הבאה</h2>
-    <p>האפליקציה ותוכניות האימון נבנו במקור עבור אישה בריאה עם ניסיון קודם באימוני כוח, שמתאמנת בערך 3–4 פעמים בשבוע. המטרה המרכזית: כוח, בריאות ותפקוד לטווח ארוך, תוך שמירה ופיתוח של מסת שריר.</p>
-    <p>התוכניות מבוססות על עקרונות מחקריים עדכניים של אימוני התנגדות: עבודה על כל קבוצות השרירים, נפח ותדירות סבירים לאורך השבוע, התקדמות הדרגתית, עבודה בדרך כלל קרוב לכשל אך לא עד כשל, והעדפה לתרגילים פשוטים ויציבים.</p>
-    <p><strong>האפליקציה נבנתה על ידי נגה ליבי כהן בעזרת GPT</strong>, כחלק מפרויקט אישי לתכנון ולתיעוד אימוני כוח.</p>
-    <div class="disclaimer">התוכניות אינן המלצה מקצועית אישית ואינן תחליף לייעוץ מקצועי מוסמך, פיזיותרפי או רפואי. יש להתאים את האימון למצב הבריאותי, לניסיון וליכולת האישית, ולהפסיק תרגיל שגורם לכאב.</div>
-    <div class="modal-actions">
-      <button id="introInstallBtn" class="secondary" type="button">איך להתקין?</button>
-      <button id="introHelpBtn" class="secondary" type="button">הסבר מלא</button>
-      <button id="introCloseBtn" class="primary" type="button">הבנתי</button>
-    </div>
-  </div>
-</div>
-
-<div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-  <div class="modal-card help-card">
-    <div class="modal-head">
-      <h2 id="helpTitle">איך להשתמש באפליקציה?</h2>
-      <button id="helpCloseBtn" class="small close-btn" type="button" aria-label="סגירה">✕</button>
-    </div>
-
-    <section>
-      <h3>מה מטרת האפליקציה?</h3>
-      <p>האפליקציה היא יומן אימוני כוח: היא מציגה תוכנית אימון, מאפשרת לתעד מה בוצע, ומציגה את הביצוע הקודם כדי לעזור בהתקדמות הדרגתית.</p>
-      <p>היא תוכננה במקור עבור אישה בוגרת, בריאה, עם ניסיון קודם באימוני כוח, שמתאמנת כ־3–4 פעמים בשבוע ומבקשת לשפר כוח, בריאות ותפקוד לטווח ארוך ולשמור או לפתח מסת שריר.</p>
-      <p>התוכניות נבנו לפי עקרונות מחקריים עדכניים: כיסוי של כל קבוצות השרירים, פיזור נפח האימון לאורך השבוע, רוב הסטים קרוב לכשל אך לא בהכרח עד כשל, התקדמות הדרגתית, ותרגילים פשוטים ויציבים. סופרסטים משמשים בעיקר כדי לקצר את האימון בלי לפגוע ככל האפשר באיכות הביצוע.</p>
-    </section>
-
-    <section>
-      <h3>איזו תוכנית לבחור?</h3>
-      <p><strong>כללית – מעודכנת:</strong> תוכנית פול־בודי מאוזנת שמטרתה כוח, בריאות וכיסוי של כל קבוצות השרירים.</p>
-      <p><strong>דגש – מעודכנת:</strong> אותה תשתית מלאה לכל הגוף, ובסוף האימון תוספת מכוונת ל<strong>טרייספס, בטן/ליבה והתקדמות במתח או במשיכה אנכית</strong>. הדגש קבוע מראש — זו אינה אפשרות לבחור דגש אחר.</p>
-      <p>אפשר לבחור בראש המסך אם השבוע כולל <strong>2, 3 או 4 אימונים</strong>. במצב 3 מוצגים A, B ו־C; במצב 4 נוסף D האופציונלי; ובמצב 2 מוצגים 2A ו־2B — שני אימוני Full Body שנבנו במיוחד לשבוע מקוצר.</p>
-      <p>הסימון <strong>“אם נשאר זמן”</strong> מציין תרגיל שהוא תוספת ולא חלק מבסיס האימון.</p>
-    </section>
-
-    <section>
-      <h3>מה למלא בכל תרגיל?</h3>
-      <p><strong>משקל / סיוע:</strong> המשקל שבו עבדת, או מידת הסיוע בתרגיל כמו מתח.</p>
-      <p><strong>חזרות / זמן:</strong> מה שבוצע בפועל בכל סט.</p>
-      <p><strong>RIR:</strong> כמה חזרות טובות לדעתך עוד היית יכולה לבצע לפני כשל. לדוגמה: RIR 2 = הרגשת שהיית יכולה לעשות בערך עוד שתי חזרות. ברוב הסטים היעד הוא בערך 1–3 חזרות “במיכל”.</p>
-      <p><strong>הערה:</strong> כל דבר שתרצי לזכור לפעם הבאה.</p>
-      <p><strong>✓:</strong> מסמן שהתרגיל בוצע ומאפיר את הכרטיס. אפשר לסמן ✓ גם בלי למלא את שאר הנתונים.</p>
-      <p><strong>“בפעם הקודמת”:</strong> מציג את הביצוע הקודם בתרגיל כדי לעזור לבחור עומס או יעד מתאים.</p>
-      <p><strong>“כמו הסט הקודם”:</strong> מעתיק לסט הנוכחי את המשקל/הסיוע, מספר החזרות או הזמן ו־RIR מהסט שמעליו; אחר כך אפשר לשנות רק את מה שהשתנה.</p>
-    </section>
-
-    <section>
-      <h3>תוספות פונקציונליות ותרגיל חופשי</h3><p>בסוף האימון מופיעות שלוש הצעות לתוספות על סמך התרגילים שתועדו באימונים האחרונים. אפשר לבחור הצעה או להוסיף כל תרגיל אחר באמצעות “הוספת תרגיל לבחירתי”. ההצעות אופציונליות.</p><p>כדי להוסיף תרגילים לאימון שכבר נשמר, בחרי את התאריך והתוכנית המתאימים ולחצי “עריכת האימון השמור”. לאחר העריכה לחצי שוב “שמירת האימון”.</p><p>לתרגילי ההשלמה מוצג כעת הסבר התקדמות זהיר לפי הנתונים שתועדו, ובסקירה השבועית מוצגות יכולות פונקציונליות שתורגלו בפועל.</p><h3>שמירה</h3>
-      <p>הנתונים שאת מקלידה נשמרים אוטומטית כטיוטה במכשיר, כדי שלא יאבדו אם הדף נטען מחדש או נסגר. בסיום לחצי <strong>“שמירת האימון”</strong> כדי לשמור את האימון בהיסטוריה.</p>
-      <p>הקישור שקיבלת הוא קישור אישי לאפליקציה שלך. כדאי לשמור אותו ולא להעביר אותו לאחרות.</p>
-    </section>
-
-    <section id="helpInstall">
-      <h3>התקנה באנדרואיד</h3>
-      <p>מומלץ לפתוח את הקישור ב־Chrome. אם מופיע באפליקציה כפתור <strong>“התקנה בנייד”</strong>, לחצי עליו ואשרי את ההתקנה.</p>
-      <p>אם הכפתור אינו מופיע: פתחי ב־Chrome את תפריט ⋮ ובחרי <strong>Install app</strong> או <strong>Add to Home screen</strong> (השם משתנה מעט בין גרסאות). לאחר מכן האפליקציה תופיע במסך הבית כמו אפליקציה רגילה.</p>
-    </section>
-
-    <section>
-      <h3>חשוב לדעת</h3>
-      <div class="disclaimer">האפליקציה נבנתה על ידי נגה ליבי כהן בעזרת GPT לצורך אישי ושיתוף עם חברות. היא אינה שירות מקצועי, רפואי או טיפולי, ותוכניות האימון אינן המלצה מקצועית אישית. מי שיש לה מצב רפואי, כאב, פציעה, מגבלה או חוסר ניסיון באימוני כוח צריכה להתייעץ עם גורם מקצועי מתאים לפני ביצוע התוכנית.</div>
-    </section>
-  </div>
-</div>
-
-<div id="pastWeekModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pastWeekTitle">
-  <div class="modal-card past-week-card">
-    <div class="modal-head">
-      <h2 id="pastWeekTitle">סקירת השבוע החולף</h2>
-      <button id="pastWeekCloseBtn" class="small close-btn" type="button" aria-label="סגירה">✕</button>
-    </div>
-    <div id="pastWeekContent"></div>
-  </div>
-</div>
-
-<script src="./access.js?v=20261023-week1" defer></script>
-<script src="./pwa.js?v=20261023-week1" defer></script>
-<script src="./insights.js?v=20261026-insights1" defer></script>
-<script src="./extras.js?v=20261026-insights1" defer></script>
-<script src="./cardio-model.js?v=20261103-cardio1" defer></script>
-<script src="./cardio.js?v=20261103-cardio1" defer></script>
-<script src="./app.js?v=20261103-cardio1" defer></script>
-</body>
-</html>
-
+<div id="savebar" class="savebar hidden"><button id="saveBtn" class="primary" type="button">שמירת האימון</button><div id="status" role="status" aria-live="polite"></div></div>
+<div id="pastWeekModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pastWeekTitle"><div class="modal-card"><div class="modal-head"><h2 id="pastWeekTitle">סקירת האימונים</h2><button class="small" data-close="pastWeekModal" aria-label="סגירה">✕</button></div><div id="pastWeekContent"></div></div></div>
+<div id="introModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="introTitle"><div class="modal-card"><h2 id="introTitle">ברוכה הבאה</h2><p>תוכנית גוף מלא לכוח, בריאות ותפקוד. מתקדמים ברצף A, B, C לפי הימים הפנויים; D הוא אימון נוסף בנפח נמוך יותר.</p><p>אפשרויות התאמה לניסיון וליכולת נמצאות בכפתור ״התאמות אישיות ולמתחילות״.</p><p>האפליקציה נבנתה על ידי נגה ליבי כהן בעזרת GPT.</p><div class="intro-actions"><button id="introInstallBtn" class="secondary">איך להתקין?</button><button id="introHelpBtn" class="secondary">הסבר מלא</button><button id="introCloseBtn" class="primary">הבנתי</button></div></div></div>
+<div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="modal-card"><div class="modal-head"><h2 id="helpTitle">איך להשתמש באפליקציה?</h2><button class="small" data-close="helpModal" aria-label="סגירה">✕</button></div>
+ <h3>הרצף המתגלגל</h3><p>אחרי A מגיע B, אחריו C ואז שוב A, גם אם התחיל שבוע חדש. D הוא אימון גוף מלא בנפח נמוך יותר ואינו מקדם את הרצף. אין צורך לבחור מראש מספר אימונים לשבוע. האימון הבא מחושב מאימונים שנשמרו עם תיעוד ביצוע.</p>
+ <h3>מה לתעד?</h3><p>בכל סט אפשר לרשום משקל או סיוע, חזרות, זמן או מרחק ו־RIR/קושי. RIR הוא מספר החזרות הנוספות שלהערכתך יכולת לבצע; אפשר גם לכתוב תיאור מילולי. בחד־צדדי הטווח הוא לכל צד. סימון ✓ מציין ביצוע גם בלי למלא את כל השדות. הערה אישית, משך והערה כללית הם אופציונליים.</p>
+ <h3>הביצוע האחרון וחלופות</h3><p>מתחת לכל תרגיל מוצג הביצוע האחרון המתועד של אותה חלופה, מכל אימון. נתונים ישנים שלא צוין בהם סוג הציוד מסומנים בנפרד. החלפת חלופה משנה גם את ההדגמה ואת נתוני הייחוס. משקל במשקולות נרשם לכל יד, ובסמית או במוט כמשקל הכולל. במתח עם גומייה אופקית אפשר לרשום את מספר החור מהתחתית.</p>
+ <h3>סופרסטים</h3><p>בכל צמד מופיע תרגיל הרגליים ראשון. מבצעים לסירוגין סט מכל תרגיל. אם לאחד מהם יש סט נוסף, משלימים אותו בנפרד. אפשר לבצע כל תרגיל בנפרד אם הציוד תפוס או אם קשה לשמור על איכות הסטים.</p>
+ <h3>תוספות והתקדמות</h3><p>אחרי הבסיס מוצעות שתי תוספות מתוכננות ואפשר לבחור עד שני תרגילים נוספים. בחירת תרגיל שכבר נמצא באימון מוסיפה אליו סטים באותו כרטיס. הבחירות נשמרות עם האימון. המלצות ההתקדמות נפתחות בלחיצה.</p>
+ <h3>שמירה והיסטוריה</h3><p>טיוטות נשמרות במכשיר בזמן ההזנה, גם במעבר לאירובי. לשמירה בהיסטוריה יש ללחוץ ״שמירת האימון״ ולהמתין לאישור. בסקירה אפשר לפתוח ולערוך גם אימונים מהתוכניות הקודמות. עריכת אימון שמור מעדכנת את אותו אימון.</p>
+ <h3>אירובי</h3><p>כפתור ״אירובי״ פותח את מעקב הריצה והפעילות האירובית. הסיכום, הדקות והצעות ההשלמה נשארים במסך הזה. האירובי נשמר בנפרד מאימון הכוח.</p>
+ <h3 id="helpInstall">התקנה באנדרואיד</h3><p>פתחי את הקישור האישי ב־Chrome ובחרי בתפריט ״התקנת אפליקציה״ או ״הוספה למסך הבית״. אפשר גם להשתמש בכפתור ההתקנה כאן אם הוא זמין. אל תשתפי את קישור הגישה האישי שלך; אפשר ליצור קישור נפרד למשתמשת נוספת.</p>
+</div></div>
+<div id="adaptationsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="adaptationsTitle"><div class="modal-card"><div class="modal-head"><h2 id="adaptationsTitle">התאמות אישיות ולמתחילות</h2><button class="small" data-close="adaptationsModal" aria-label="סגירה">✕</button></div>
+ <h3>נפח ומאמץ</h3><p>אפשר להתחיל בפחות סטים, אפילו סט אחד לתרגיל לפי היכולת, ולהתקדם בהדרגה. למתחילות מתאים תחילה להשאיר כ־3–4 חזרות ברזרבה. בבסיס התוכנית מכוונים בדרך כלל ל־1–3 חזרות ברזרבה; ב־D להפחתת עומס ל־3–4. אין חובה להגיע לכשל או לבצע תוספות.</p>
+ <h3>מנוחה וסופרסטים</h3><p>בתרגילי הכוח המרכזיים אפשר להתחיל מכ־1.5–3 דקות לפני שחוזרים לאותו תרגיל, ובתוספות ובבטן מכ־60–90 שניות, ולהאריך לפי הצורך. אם הנשימה, האחיזה או היציבות מגבילות את הסט הבא, נחים יותר או מפרידים את הצמד.</p>
+ <h3>קפיצות אחרי החימום</h3><p>התחלה ב־3 סטים של עד 10 קפיצות: אנכי, צידי, אנכי. אפשר להוסיף סט רביעי צידי ולאחריו סט אנכי חמישי, עד 50 קפיצות. כל נחיתה נספרת כאחת. מפחיתים חזרות אם איכות הביצוע יורדת, ונחים 60–120 שניות בין הסטים. מבצעים בשתי רגליים, על משטח יציב וללא משקל נוסף. אפשר לשלב את שני הכיוונים מההתחלה בהתאם ליכולת. ב־D עקב עייפות אפשר להפחית או לדלג. אין צורך בימי אימפקט נוספים.</p>
+ <h3>התקדמות</h3><p>כאשר מגיעים בעקביות לקצה העליון של הטווח בשליטה ובמאמץ המתאים, אפשר להוסיף מעט משקל או להפחית סיוע במתח. בתרגילי זמן ומרחק מתקדמים בתוך הטווח ואז מוסיפים קושי, במקום להאריך ללא גבול. בתרגילים מתאימים אפשר להתכוון לשלב מאמץ מהיר ולחזרה מבוקרת.</p>
+ <h3>משך ותדירות</h3><p>התוכנית גמישה ל־2–4 אימוני כוח לפי היכולת והזמן. אימוני ABC כוללים בסיס רחב גם כאשר הגעת רק פעמיים. D הוא קצר יותר ואינו מספק בדיוק אותו נפח. משך האימון תלוי במנוחות ובתוספות; אין חובה להגיע למספר דקות מסוים.</p>
+ <p class="muted">יש להתאים את האימון למצב הבריאותי וליכולת. כאב או תסמינים חדשים מצריכים עצירה ובירור; התוכנית אינה תחליף להערכה אישית כשזו נדרשת.</p>
+</div></div>
+<script src="./access.js?v=20261023-week1" defer></script><script src="./pwa.js?v=20261023-week1" defer></script><script src="./program.js?v=20261105-rolling1" defer></script><script src="./insights.js?v=20261105-rolling1" defer></script><script src="./cardio-model.js?v=20261103-cardio1" defer></script><script src="./cardio.js?v=20261103-cardio1" defer></script><script src="./app.js?v=20261105-rolling1" defer></script>
+</body></html>

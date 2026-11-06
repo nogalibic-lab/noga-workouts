@@ -1,0 +1,344 @@
+[
+  {
+    "exercise_key": "leg_press",
+    "name": "לחיצת רגליים",
+    "url": "https://www.muscleandstrength.com/exercises/45-degree-leg-press.html",
+    "video_title": "Leg Press",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "cable_row",
+    "name": "חתירה בישיבה בכבל",
+    "url": "https://www.muscleandstrength.com/exercises/seated-row.html",
+    "video_title": "52 - Seated Cable Row",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "rdl",
+    "name": "דדליפט רומני — RDL במוט",
+    "url": "https://www.muscleandstrength.com/exercises/romanian-deadlift",
+    "video_title": "Barbell Romanian Deadlift",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "smith_chest_press",
+    "name": "לחיצת חזה בסמית",
+    "url": "https://www.muscleandstrength.com/exercises/smith-machine-bench-press.html",
+    "video_title": "18 - Smith Machine Bench Press",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dumbbell_chest_press",
+    "name": "לחיצת חזה במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/dumbbell-bench-press.html",
+    "video_title": "Dumbbell Bench Press",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "smith_incline_press",
+    "name": "לחיצת חזה בשיפוע בסמית",
+    "url": "https://www.muscleandstrength.com/exercises/incline-smith-machine-bench-press.html",
+    "video_title": "22 - Smith Machine Incline Bench Press",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dumbbell_incline_press",
+    "name": "לחיצת חזה בשיפוע במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/incline-dumbbell-bench-press.html",
+    "video_title": "Incline Dumbbell Bench Press",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "lat_pulldown",
+    "name": "פולי עליון",
+    "url": "https://www.muscleandstrength.com/exercises/lat-pull-down.html",
+    "video_title": "Lat Pulldown (Double Overhand)",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "band_assisted_pullup",
+    "name": "מתח בסיוע גומייה",
+    "url": "https://video.wixstatic.com/video/27ebac_23d815493cfa4422833f84356fb4ab89/720p/mp4/file.mp4",
+    "video_title": "Horizontal band assisted pull-up",
+    "available": true,
+    "verification": "Direct MP4 and visual equipment check",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "smith_calf_raise",
+    "name": "עליות עקב בסמית",
+    "url": "https://www.muscleandstrength.com/exercises/smith-machine-calf-raise.html",
+    "video_title": "1 - Smith Machine Calf Raise",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "leg_press_calf_raise",
+    "name": "עליות עקב במכונת לחיצת רגליים",
+    "url": "https://www.muscleandstrength.com/exercises/45-degress-calf-press.html",
+    "video_title": "Leg Press Calf Raise",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dumbbell_calf_raise",
+    "name": "עליות עקב במשקולות",
+    "url": "https://www.youtube.com/watch?v=dydznZ_sI_w",
+    "video_title": "How To Do: Dumbbell Calf Raise - Standing | Leg Workout Exercise",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "cable_crunch",
+    "name": "קראנץ׳ בכבל",
+    "url": "https://www.muscleandstrength.com/exercises/cable-crunch.html",
+    "video_title": "35 - Cable Crunch",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "split_squat",
+    "name": "ספליט סקוואט במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/dumbbell-split-squat",
+    "video_title": "Dumbbell Split Squat",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "seated_leg_curl",
+    "name": "כפיפת ברכיים בישיבה — לג קרל",
+    "url": "https://www.muscleandstrength.com/exercises/seated-leg-curl",
+    "video_title": "Seated Leg Curl",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "lying_leg_curl",
+    "name": "כפיפת ברכיים בשכיבה — לג קרל",
+    "url": "https://www.muscleandstrength.com/exercises/leg-curl.html",
+    "video_title": "82 - Lying Leg Curl",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "shoulder_press",
+    "name": "לחיצת כתפיים בישיבה במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/seated-dumbbell-press.html",
+    "video_title": "Seated Dumbbell Press (Bilateral)",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "farmer_carry_distance",
+    "name": "פארמר קארי",
+    "url": "https://www.muscleandstrength.com/exercises/farmers-walk",
+    "video_title": "Dumbbell Suitcase / Farmers Carry",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "side_plank",
+    "name": "פלאנק צדי",
+    "url": "https://www.muscleandstrength.com/exercises/side-hover.html",
+    "video_title": "17 - Side Plank",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "step_up",
+    "name": "עלייה למדרגה במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/dumbbell-step-up.html",
+    "video_title": "27 - Dumbbell Step Up",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "reverse_crunch",
+    "name": "רוורס קראנץ׳",
+    "url": "https://www.youtube.com/watch?v=XY8KzdDcMFg",
+    "video_title": "How To Do A Reverse Crunch",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dead_bug",
+    "name": "דד באג",
+    "url": "https://www.muscleandstrength.com/exercises/dead-bug",
+    "video_title": "Deadbug",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dumbbell_curl",
+    "name": "כפיפת מרפקים במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/standing-dumbbell-curl.html",
+    "video_title": "47 - Standing Dumbbell Curl",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "cable_curl",
+    "name": "כפיפת מרפקים בכבל",
+    "url": "https://www.muscleandstrength.com/exercises/cable-curl.html",
+    "video_title": "3 - Cable Curl",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "triceps_pushdown",
+    "name": "פשיטת מרפקים בכבל",
+    "url": "https://www.muscleandstrength.com/exercises/tricep-extension.html",
+    "video_title": "Straight Bar Tricep Extension",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "lateral_raise",
+    "name": "הרחקת כתפיים במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/dumbbell-lateral-raise.html",
+    "video_title": "46 - Dumbbell Lateral Raise",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "dumbbell_reverse_fly",
+    "name": "פרפר הפוך במשקולות",
+    "url": "https://www.muscleandstrength.com/exercises/bent-over-dumbbell-reverse-fly.html",
+    "video_title": "Bent Over Rear Delt Fly",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "cable_reverse_fly",
+    "name": "פרפר הפוך בכבלים",
+    "url": "https://www.muscleandstrength.com/exercises/bent-over-cable-rear-delt-fly",
+    "video_title": "Bent Over Low Pulley Rear Delt Fly",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "leg_extension",
+    "name": "פשיטת ברכיים — לג אקסטנשן",
+    "url": "https://www.muscleandstrength.com/exercises/leg-extension.html",
+    "video_title": "Seated Leg Extension",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "hip_thrust",
+    "name": "היפ תראסט במוט",
+    "url": "https://www.muscleandstrength.com/exercises/barbell-hip-thrust",
+    "video_title": "Barbell Hip Thrust",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "reverse_lunge",
+    "name": "לאנג׳ לאחור במשקולות",
+    "url": "https://prestige-fit.com/exercises/lunge/dumbbell-reverse-lunge/",
+    "video_title": "Dumbbell Reverse Lunge",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "lateral_lunge",
+    "name": "לאנג׳ צדי",
+    "url": "https://www.muscleandstrength.com/exercises/bodyweight-side-lunge.html",
+    "video_title": "38 - Bodyweight Lateral Lunge",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "band_lateral_walk",
+    "name": "צעדים צידיים עם גומייה סביב הרגליים",
+    "url": "https://www.muscleandstrength.com/exercises/lateral-band-walk",
+    "video_title": "Lateral Band Walk",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "v_up",
+    "name": "V-up / אולרים",
+    "url": "https://www.catalystathletics.com/exercise/313/V-Up/",
+    "video_title": "V-Up | Olympic Weightlifting Exercise Library",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "pallof_press",
+    "name": "פאלוף פרס בכבל",
+    "url": "https://www.muscleandstrength.com/exercises/pallof-press",
+    "video_title": "Pallof Press (Standing)",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "russian_twist",
+    "name": "ראשן טוויסט בשליטה",
+    "url": "https://www.muscleandstrength.com/exercises/russian-twist.html",
+    "video_title": "12 - Russian Twist",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "impact_jumps",
+    "name": "קפיצות אנכיות וצידיות",
+    "url": "https://www.muscleandstrength.com/exercises/bodyweight-jump-squat.html",
+    "video_title": "29 - Bodyweight Jump Squat",
+    "available": true,
+    "verification": "Source page, embedded player, and HLS stream HTTP 200",
+    "checked_on": "2026-11-06"
+  },
+  {
+    "exercise_key": "lateral_jump",
+    "name": "קפיצות אנכיות וצידיות",
+    "url": "https://www.youtube.com/watch?v=g0AWUXKUinQ",
+    "video_title": "Line Hops - Double Leg, Lateral",
+    "available": true,
+    "verification": "YouTube oEmbed title/channel and thumbnail",
+    "checked_on": "2026-11-06"
+  }
+]
