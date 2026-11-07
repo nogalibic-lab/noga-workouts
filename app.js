@@ -68,8 +68,35 @@ function collect(keepEmpty=false){
  exercises.push({slot_id:'__noga_ui_v3__',exercise_key:'__noga_ui_v3__',exercise_name:'אפשרויות האימון',exercise_note:JSON.stringify(meta),sets:[]});
  return {id:state.id,revision:state.revision,program_key:state.program,workout_code:state.workout,performed_at:state.date,duration_minutes:$('#duration').value.trim(),notes:$('#sessionNotes').value.trim(),completed_exercises:[...document.querySelectorAll('.exercise')].filter(c=>c.querySelector('.complete-toggle').checked).map(c=>c.dataset.slot),exercises,extra_metadata:extras};
 }
+// Empty set rows and UI metadata are not evidence that a workout took place.
+function hasWorkoutData(d){
+ if(!d||typeof d!=='object')return false;
+ if(Array.isArray(d.completed_exercises)&&d.completed_exercises.length)return true;
+ if(String(d.duration_minutes??'').trim()||String(d.notes??'').trim())return true;
+ return Array.isArray(d.exercises)&&d.exercises.some(e=>{
+  if(!e||String(e.exercise_key||'').startsWith('__'))return false;
+  return !!String(e.exercise_note??'').trim()||(Array.isArray(e.sets)&&e.sets.some(r=>r&&['load_text','reps_text','duration_seconds','rir_text'].some(k=>String(r[k]??'').trim())));
+ });
+}
+// Keep intentional exercise choices without mislabeling them as unfinished workouts.
+function hasDraftChoices(d){
+ if(!d||typeof d!=='object')return false;
+ const meta=uiMeta(d);
+ return meta.impact===false||(Array.isArray(meta.extras)&&meta.extras.length>0)||(Array.isArray(d.extra_metadata)&&d.extra_metadata.length>0)
+  ||(Array.isArray(d.exercises)&&d.exercises.some(e=>e?.exercise_key==='__noga_extras_v1__'&&e.exercise_note&&e.exercise_note!=='[]'));
+}
+function hasDraftContent(d){return hasWorkoutData(d)||hasDraftChoices(d);}
 function changed(){if(state.saving)return;state.dirty=true;clearTimeout(state.timer);state.timer=setTimeout(persistDraft,250);}
-function persistDraft(){if(!state.data||!state.dirty)return;const ok=storage.set(draftKey(),collect(true));$('#status').className=ok?'pending':'bad';$('#status').textContent=ok?'טיוטה נשמרה במכשיר · לשמירה בהיסטוריה לחצי על שמירת האימון':'לא ניתן לשמור טיוטה במכשיר — השאירי את המסך פתוח';}
+function persistDraft(){
+ if(!state.data||!state.dirty)return;
+ const draft=collect(true),key=draftKey(),hasWorkout=hasWorkoutData(draft);
+ if(!hasDraftContent(draft)){
+  if(storage.get(key))storage.set(key,draft); // Update an existing draft, but never create a new empty one.
+  state.dirty=false;$('#status').className='';$('#status').textContent='';return;
+ }
+ const ok=storage.set(key,draft);$('#status').className=ok?'pending':'bad';
+ $('#status').textContent=ok?(hasWorkout?'טיוטה נשמרה במכשיר · לשמירה בהיסטוריה לחצי על שמירת האימון':'בחירות האימון נשמרו במכשיר'):'לא ניתן לשמור טיוטה במכשיר — השאירי את המסך פתוח';
+}
 function stash(){clearTimeout(state.timer);persistDraft();}
 function uiMeta(d){try{const raw=d.exercise_notes?.__noga_ui_v3__||(d.exercises||[]).find(x=>x.exercise_key==='__noga_ui_v3__')?.exercise_note;return typeof raw==='string'?JSON.parse(raw):raw||{};}catch{return {};}}
 function savedData(s){return {...s,exercises:Object.values((s.sets||[]).reduce((a,r)=>{const slot=r.slot_id||r.exercise_key;if(!a[slot])a[slot]={slot_id:slot,exercise_key:r.exercise_key,exercise_name:r.exercise_name,variant_label:r.variant_label,exercise_note:s.exercise_notes?.[slot]||'',sets:[]};a[slot].sets.push(r);return a;},{}))};}
@@ -91,8 +118,9 @@ function oldItems(saved){
 }
 function openWorkout({program=P.KEY,workout=state.workout,date=state.date,saved=null}={}){
  stash();state.program=program;state.workout=workout;state.date=date||today();$('#date').value=state.date;
- const draft=storage.get(draftKey());
+ const rawDraft=storage.get(draftKey());
  const stored=saved||(state.data.history||[]).find(s=>s.program_key===program&&s.workout_code===workout&&s.performed_at===state.date);
+ const draft=hasWorkoutData(rawDraft)||(!stored&&hasDraftChoices(rawDraft))?rawDraft:null;
  const d=draft||(stored?savedData(stored):null),meta=d?uiMeta(d):{};
  state.legacyMetadata=Object.fromEntries(Object.entries(d?.exercise_notes||{}).filter(([k])=>k.startsWith('__')&&k!=='__noga_ui_v3__'));
  for(const e of d?.exercises||[])if(e.exercise_key?.startsWith('__')&&e.exercise_key!=='__noga_ui_v3__')state.legacyMetadata[e.slot_id||e.exercise_key]=e.exercise_note;
@@ -172,10 +200,20 @@ function removeExtra(i){
  state.extras.splice(i,1);changed();renderExtras();
 }
 function showRecovery(){
- const entries=[],prefix='noga-workouts:draft-v2:'+state.namespace+':';try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith(prefix)&&k!==draftKey()){const d=storage.get(k);if(d)entries.push(d);}}}catch{}
+ const entries=[],emptyKeys=[],prefix='noga-workouts:draft-v2:'+state.namespace+':';
+ try{for(let i=0;i<localStorage.length;i++){
+  const k=localStorage.key(i);if(!k.startsWith(prefix))continue;
+  const d=storage.get(k);if(!d||typeof d!=='object')continue;
+  if(hasWorkoutData(d)){if(k!==draftKey())entries.push(d);}
+  else if(!hasDraftChoices(d))emptyKeys.push(k);
+ }}catch{}
  $('#draftRecovery').classList.toggle('hidden',!entries.length);
- $('#draftRecovery').innerHTML='<strong>טיוטות שלא נשמרו בהיסטוריה</strong>'+entries.map((d,i)=>'<button type="button" class="small" data-draft="'+i+'">'+esc(d.performed_at)+' · '+esc(programLabel(d.program_key))+' '+esc(d.workout_code)+'</button>').join('');
+ $('#draftRecovery').innerHTML=entries.length?'<strong>טיוטות שלא נשמרו בהיסטוריה</strong>'+entries.map((d,i)=>'<button type="button" class="small" data-draft="'+i+'">'+esc(d.performed_at)+' · '+esc(programLabel(d.program_key))+' '+esc(d.workout_code)+'</button>').join(''):'';
  $('#draftRecovery').querySelectorAll('[data-draft]').forEach(b=>b.onclick=()=>{const d=entries[Number(b.dataset.draft)];openWorkout({program:d.program_key,workout:d.workout_code,date:d.performed_at});});
+ const clean=$('#clearEmptyDrafts');if(clean){
+  clean.disabled=!emptyKeys.length;clean.textContent='ניקוי טיוטות ריקות'+(emptyKeys.length?' ('+emptyKeys.length+')':'');
+  clean.onclick=()=>{for(const k of emptyKeys){const d=storage.get(k);if(d&&!hasDraftContent(d))storage.remove(k);}showRecovery();};
+ }
 }
 function setView(view,save=true){if(save)stash();state.view=view;document.body.dataset.view=view;$('#strengthScreen').classList.toggle('hidden',view!=='strength');$('#strengthControls').classList.toggle('hidden',view!=='strength');$('#dateBox').classList.toggle('hidden',view!=='strength');$('#cardioScreen').classList.toggle('hidden',view!=='cardio');$('#savebar').classList.toggle('hidden',view!=='strength'||!state.data);$('#cardioNav').classList.toggle('active',view==='cardio');$('#strengthNav').classList.toggle('active',view==='strength');if(save)window.scrollTo({top:0});}
 function openModal(id){$(id).classList.remove('hidden');document.body.classList.add('modal-open');}

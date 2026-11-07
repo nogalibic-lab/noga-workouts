@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v11-rolling';
+const CACHE = 'noga-workouts-shell-v12-draftfix';
 const SHELL = [
   './',
   './index.html',
