@@ -1,4 +1,4 @@
-const CACHE = 'noga-workouts-shell-v12-draftfix';
+const CACHE = 'noga-workouts-shell-v13-historyplates';
 const SHELL = [
   './',
   './index.html',

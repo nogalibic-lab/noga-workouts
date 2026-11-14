@@ -70,11 +70,12 @@
     return '<div class="functional-weekly"><div class="functional-weekly-title">יכולות פונקציונליות שתורגלו</div>'
       +list+'<p class="muted functional-footnote">נספרים רק אימונים שבהם סומן תרגיל כבוצע או תועדו חזרות, זמן או מרחק. לא כל פעילות חייבת להיכנס ליומן.</p></div>';
   }
+  const recordedKey=(row,session)=>root.WorkoutProgram?.recordedKey(row,session)||row.exercise_key;
   function validSessions(key,history,context) {
     const date=context?.date||"";
     const excluded=context?.sessionId||"";
     return (history||[]).filter(s=>s && s.id!==excluded && (!date||s.performed_at<=date)
-      && (s.sets||[]).some(x=>x.exercise_key===key && performed(x)))
+      && (s.sets||[]).some(x=>recordedKey(x,s)===key && performed(x)))
       .sort((a,b)=>String(b.performed_at||"").localeCompare(String(a.performed_at||""))||
         String(b.created_at||"").localeCompare(String(a.created_at||"")));
   }
@@ -90,8 +91,8 @@
   }
   function deltaLine(a,b,meta) {
     if (!a||!b) return "";
-    const ar=(a.sets||[]).filter(x=>x.exercise_key===meta.k && performed(x));
-    const br=(b.sets||[]).filter(x=>x.exercise_key===meta.k && performed(x));
+    const ar=(a.sets||[]).filter(x=>recordedKey(x,a)===meta.k && performed(x));
+    const br=(b.sets||[]).filter(x=>recordedKey(x,b)===meta.k && performed(x));
     if (!ar.length || ar.length!==br.length) return "";
     if (!ar.every((r,i)=>filled(r.load_text)&&String(r.load_text).trim()===String(br[i].load_text||"").trim())) return "";
     const av=numericValues(ar,meta),bv=numericValues(br,meta);
@@ -110,7 +111,7 @@
       guidance:"כדאי להתחיל בעומס נוח ובטכניקה יציבה, ולתעד ביצוע כדי להשוות בפעם הבאה."
     };
     const last=sessions[0];
-    const rows=(last.sets||[]).filter(r=>r.exercise_key===meta.k && performed(r));
+    const rows=(last.sets||[]).filter(r=>recordedKey(r,last)===meta.k && performed(r));
     const values=numericValues(rows,meta);
     const upper=rangeLimits(meta.r);
     const rir=rows.map(r=>numeric(r.rir_text)).filter(Number.isFinite);

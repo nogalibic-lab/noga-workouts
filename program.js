@@ -88,26 +88,60 @@
     const last=sorted(history).find(s=>s.program_key===KEY&&['A','B','C'].includes(s.workout_code)&&(!date||s.performed_at<=date)&&validSession(s));
     return last?{A:'B',B:'C',C:'A'}[last.workout_code]:'A';
   }
+  function variantsFor(s) {
+    try{return JSON.parse(s.exercise_notes?.__noga_ui_v3__||'{}').variants||{};}catch{return {};}
+  }
+  // Resolve only recorded equipment, never the default program prescription.
+  function recordedKey(row,s) {
+    const key=row.exercise_key;
+    if(catalog[key])return key;
+    const candidates=Object.values(catalog).filter(e=>e.legacy.includes(key));
+    if(!candidates.length)return key;
+    const selected=variantsFor(s)[row.slot_id||key];
+    if(candidates.some(e=>e.exercise_key===selected))return selected;
+    const label=String(row.variant_label||row.exercise_name||'');
+    const exact=candidates.find(e=>e.exercise_name===label);
+    if(exact)return exact.exercise_key;
+    // Equipment words are evidence only within this recorded exercise family.
+    const clues=[[/סמית|smith/i,'smith_'],[/לחיצת רגליים|leg.?press/i,'leg_press_'],[/משקולות|dumbbell/i,'dumbbell_'],[/בישיבה|seated/i,'seated_'],[/בשכיבה|lying/i,'lying_']];
+    const matches=candidates.filter(e=>clues.some(([pattern,prefix])=>pattern.test(label)&&e.exercise_key.startsWith(prefix)));
+    return matches.length===1?matches[0].exercise_key:key;
+  }
+  function usesPlates(e) {
+    return e.exercise_key==='rdl'||e.exercise_key==='hip_thrust'||e.exercise_key.startsWith('smith_')||/בסמית/.test(e.exercise_name||'');
+  }
+  // Store in the existing per-set notes field; no schema or old records change.
+  function setDetails(notes) {
+    try{const d=JSON.parse(notes);if(d?.noga_set_v1===true&&typeof d.plates==='string'&&typeof d.note==='string')return d;}catch{}
+    return {plates:'',note:String(notes||'')};
+  }
+  function setNotes(plates,note='') {
+    return plates?JSON.stringify({noga_set_v1:true,plates,note}):note;
+  }
   function previous(e,history,{date='',sessionId=''}={}) {
     const sessions=sorted(history).filter(s=>s.id!==sessionId&&(!date||s.performed_at<=date));
     for(const s of sessions){
-      const rows=(s.sets||[]).filter(r=>r.exercise_key===e.exercise_key&&rowPerformed(r,s));
-      let variants={};try{variants=JSON.parse(s.exercise_notes?.__noga_ui_v3__||'{}').variants||{};}catch{}
+      const rows=(s.sets||[]).filter(r=>recordedKey(r,s)===e.exercise_key&&rowPerformed(r,s));
+      const variants=variantsFor(s);
       const marked=(s.completed_exercises||[]).some(slot=>{
+        const actual=(s.sets||[]).filter(r=>(r.slot_id||r.exercise_key)===slot);
+        if(actual.length)return actual.some(r=>recordedKey(r,s)===e.exercise_key);
         if(variants[slot])return variants[slot]===e.exercise_key;
         return slot===e.exercise_key||((s.program_snapshot||[]).some(x=>(x.slot_id||x.exercise_key)===slot&&x.exercise_key===e.exercise_key));
       });
       if(rows.length||marked)return{s,rows,legacy:false};
     }
-    // Older generic equipment keys are shown as explicitly unspecified history,
-    // never as a comparable Smith/machine/dumbbell measurement.
+    // Legacy measurement modes (for example carry time vs distance) stay labelled.
+    // Unspecified equipment never supplies loads for a selected variant.
     for(const s of sessions){
-      const rows=(s.sets||[]).filter(r=>(e.legacy||[]).includes(r.exercise_key)&&rowPerformed(r,s));
+      // Unknown equipment cannot supply loads for a selected machine/Smith variant.
+      if((families[e.family]||[]).length>1)break;
+      const rows=(s.sets||[]).filter(r=>(e.legacy||[]).includes(recordedKey(r,s))&&rowPerformed(r,s));
       if(rows.length)return{s,rows,legacy:true};
     }
     return null;
   }
-  const api={KEY,catalog,families,plans,fixed,choices,coreSuggestion,resolve,exercises,previous,nextWorkout,validSession,sorted};
+  const api={KEY,catalog,families,plans,fixed,choices,coreSuggestion,resolve,exercises,previous,nextWorkout,validSession,sorted,recordedKey,usesPlates,setDetails,setNotes};
   root.WorkoutProgram=api;
   if(typeof module==='object'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

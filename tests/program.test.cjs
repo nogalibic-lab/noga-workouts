@@ -4,8 +4,32 @@ test('approved base volumes and lower/upper superset ordering',()=>{for(const [w
 test('rolling sequence crosses weeks, D and empty sessions never advance it',()=>{const h=[session('a','2026-10-31','A','leg_press'),session('d','2026-11-02','D','leg_press'),session('empty','2026-11-03','B','leg_press','')];assert.equal(P.nextWorkout(h,'2026-11-05'),'B');h.push(session('b','2026-11-04','B','cable_row'));assert.equal(P.nextWorkout(h,'2026-11-05'),'C');h.push(session('c','2026-11-05','C','rdl'));assert.equal(P.nextWorkout(h,'2026-11-05'),'A');});
 test('latest execution comes from any workout, excludes current and future records',()=>{const h=[session('a','2026-11-01','A','cable_row'),session('c','2026-11-03','C','cable_row'),session('current','2026-11-05','A','cable_row'),session('future','2026-11-10','B','cable_row')];assert.equal(P.previous(P.catalog.cable_row,h,{date:'2026-11-05',sessionId:'current'}).s.id,'c');});
 test('equipment alternatives never borrow each other’s measurements',()=>{const h=[session('smith','2026-11-01','A','smith_calf_raise'),session('press','2026-11-04','C','leg_press_calf_raise')];assert.equal(P.previous(P.catalog.smith_calf_raise,h).s.id,'smith');assert.equal(P.previous(P.catalog.leg_press_calf_raise,h).s.id,'press');assert.equal(P.previous(P.catalog.dumbbell_calf_raise,h),null);});
-test('legacy unspecified measurements stay explicitly labelled',()=>{const h=[session('old','2026-11-01','A','calf_raise','12','general_v2')];assert.equal(P.previous(P.catalog.smith_calf_raise,h).legacy,true);});
+test('unspecified legacy equipment cannot supply variant loads',()=>{const h=[session('old','2026-11-01','A','calf_raise','12','general_v2')];for(const key of P.families.calf_raise)assert.equal(P.previous(P.catalog[key],h),null);assert.equal(P.previous(P.catalog.farmer_carry_distance,[session('carry','2026-11-01','A','farmer_carry')]).legacy,true);});
 test('a weight-only row is not a completed workout',()=>{const s=session('a','2026-11-04','A','leg_press','');assert.equal(P.validSession(s),false);s.completed_exercises=['leg_press'];assert.equal(P.validSession(s),true);});
 test('every selectable exercise has muscles and a specific demo URL',()=>{for(const e of Object.values(P.catalog)){assert.ok(e.primary_muscles);assert.match(e.demo_url,/^https:\/\//);assert.ok(!e.demo_url.includes('results?'));}assert.ok(!Object.keys(P.catalog).some(k=>k.includes('cable_hip_abduction')));});
 test('completion-only entries use the recorded variant, not the default prescription',()=>{const s={id:'m',performed_at:'2026-11-05',sets:[],completed_exercises:['calf_raise'],exercise_notes:{__noga_ui_v3__:JSON.stringify({variants:{calf_raise:'leg_press_calf_raise'}})},program_snapshot:[P.resolve('calf_raise')]};assert.equal(P.previous(P.resolve('calf_raise'),[s]),null);assert.equal(P.previous(P.resolve('calf_raise',{calf_raise:'leg_press_calf_raise'}),[s]).s.id,'m');});
 test('jump-only entry does not advance the strength sequence',()=>{assert.equal(P.nextWorkout([{...session('j','2026-11-05','A','impact_jumps'),completed_exercises:['impact_jumps']}]),'A');});
+
+test('actual machine sets override a completed slot and default Smith snapshot',()=>{
+ const old=session('smith','2026-11-01','A','smith_calf_raise');
+ const recent=session('press','2026-11-04','C','leg_press_calf_raise');recent.sets[0].slot_id='calf_raise';recent.completed_exercises=['calf_raise'];recent.program_snapshot=[P.resolve('calf_raise')];
+ assert.equal(P.previous(P.resolve('calf_raise'),[old,recent]).s.id,'smith');
+ assert.equal(P.previous(P.catalog.leg_press_calf_raise,[old,recent]).s.id,'press');
+});
+test('generic legacy keys use recorded variant metadata or explicit equipment only',()=>{
+ const s=session('old','2026-11-01','A','calf_raise');s.exercise_notes={__noga_ui_v3__:JSON.stringify({variants:{calf_raise:'leg_press_calf_raise'}})};
+ assert.equal(P.previous(P.catalog.leg_press_calf_raise,[s]).s.id,'old');assert.equal(P.previous(P.catalog.smith_calf_raise,[s]),null);
+ delete s.exercise_notes;s.sets[0].variant_label='עליות עקב בסמית';assert.equal(P.previous(P.catalog.smith_calf_raise,[s]).s.id,'old');assert.equal(P.previous(P.catalog.leg_press_calf_raise,[s]),null);
+ s.sets[0].variant_label='';s.sets[0].exercise_name='עליות עקב במכונת לחיצת רגליים';assert.equal(P.previous(P.catalog.leg_press_calf_raise,[s]).s.id,'old');
+ s.sets[0].exercise_name='עליות עקב';s.program_snapshot=[P.resolve('calf_raise')];assert.equal(P.previous(P.catalog.smith_calf_raise,[s]),null);
+});
+test('plate setup retains existing notes and does not change total load',()=>{
+ const raw=P.setNotes('10 + 5','old note');assert.deepEqual(P.setDetails(raw),{noga_set_v1:true,plates:'10 + 5',note:'old note'});
+ assert.equal(P.setNotes('',P.setDetails(raw).note),'old note');assert.equal(P.setDetails('אנכי').note,'אנכי');
+ for(const key of ['rdl','smith_chest_press','smith_incline_press','smith_calf_raise','hip_thrust'])assert.equal(P.usesPlates(P.catalog[key]),true);
+ for(const key of ['dumbbell_chest_press','leg_press_calf_raise','impact_jumps'])assert.equal(P.usesPlates(P.catalog[key]),false);
+});
+test('progression uses the same recorded variant as previous performance',()=>{
+ const I=require('../insights.js'),s=session('old','2026-11-01','A','calf_raise');s.exercise_notes={__noga_ui_v3__:JSON.stringify({variants:{calf_raise:'leg_press_calf_raise'}})};
+ const meta={k:'leg_press_calf_raise',m:'reps',s:2,r:'10–15'};assert.match(I.progression(meta,[s]).history,/2026-11-01/);assert.doesNotMatch(I.progression({...meta,k:'smith_calf_raise'},[s]).history,/2026-11-01/);
+});

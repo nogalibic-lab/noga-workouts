@@ -16,14 +16,15 @@ const preferenceKey=()=> 'noga-workouts:preferences-v3:'+state.namespace;
 const metricLabel=m=>({distance:'מטרים',seconds:'שניות',seconds_per_side:'שניות לכל צד',reps_per_side:'חזרות לכל צד'}[m]||'חזרות');
 function setRow(n,e,v={}){
  const timed=e.metric_type.startsWith('seconds'),jump=e.exercise_key==='impact_jumps';
- const direction=jump?(n%2?'אנכי':'צידי'):'';
- return '<div class="setrow" data-direction="'+direction+'"><span class="setnum">'+n+(direction?'<small>'+direction+'</small>':'')+'</span><input class="load" aria-label="'+esc(e.load_label)+' — סט '+n+'" placeholder="'+esc(jump?'—':e.load_label||'משקל / סיוע')+'" value="'+esc(v.load_text||'')+'"'+(jump?' disabled':'')+'><input class="metric" inputmode="decimal" aria-label="'+metricLabel(e.metric_type)+' — סט '+n+'" placeholder="'+metricLabel(e.metric_type)+'" value="'+esc(timed?v.duration_seconds||'':v.reps_text||'')+'"><input class="rir" aria-label="RIR או קושי — סט '+n+'" placeholder="RIR / קושי" value="'+esc(v.rir_text||'')+'">'+(n>1?'<button class="copy-prev" type="button" aria-label="העתקת הסט הקודם לסט '+n+'">כמו הקודם</button>':'')+'</div>';
+ const detail=P.setDetails(v.notes),direction=jump?(n%2?'אנכי':'צידי'):'';
+ const plates=P.usesPlates(e)?'<label class="plate-field">פלטות בכל צד (ק״ג) · אופציונלי<input class="plates" maxlength="160" aria-label="פלטות בכל צד — סט '+n+'" placeholder="למשל 10 + 5 בכל צד" value="'+esc(detail.plates)+'"></label>':'';
+ return '<div class="setrow" data-direction="'+direction+'" data-note="'+esc(detail.note||direction)+'"><span class="setnum">'+n+(direction?'<small>'+direction+'</small>':'')+'</span><input class="load" aria-label="'+esc(e.load_label)+' — סט '+n+'" placeholder="'+esc(jump?'—':e.load_label||'משקל / סיוע')+'" value="'+esc(v.load_text||'')+'"'+(jump?' disabled':'')+'><input class="metric" inputmode="decimal" aria-label="'+metricLabel(e.metric_type)+' — סט '+n+'" placeholder="'+metricLabel(e.metric_type)+'" value="'+esc(timed?v.duration_seconds||'':v.reps_text||'')+'"><input class="rir" aria-label="RIR או קושי — סט '+n+'" placeholder="RIR / קושי" value="'+esc(v.rir_text||'')+'">'+(n>1?'<button class="copy-prev" type="button" aria-label="העתקת הסט הקודם לסט '+n+'">כמו הקודם</button>':'')+plates+'</div>';
 }
 function demoHtml(e){return e.demo_url?'<a class="demo" target="_blank" rel="noopener noreferrer" href="'+esc(e.demo_url)+'">'+(e.second_demo_url?'הדגמה אנכית':'הדגמה')+' ↗</a>'+(e.second_demo_url?'<a class="demo" target="_blank" rel="noopener noreferrer" href="'+esc(e.second_demo_url)+'">הדגמה צידית ↗</a>':''):'';}
 function prevHtml(e){
  const p=P.previous(e,state.data.history,{date:state.date,sessionId:state.id});
  if(!p)return '<div class="previous muted">אין עדיין ביצוע קודם מתועד לחלופה הזאת.</div>';
- const lines=p.rows.map(r=>{const bits=[];if(r.load_text)bits.push(r.load_text);if(r.reps_text)bits.push(r.reps_text+' '+(e.metric_type==='distance'&&!p.legacy?'מטרים':e.exercise_key==='band_lateral_walk'?'צעדים':'חזרות'));if(r.duration_seconds)bits.push(r.duration_seconds+' שניות');if(r.rir_text)bits.push('RIR '+r.rir_text);if(r.notes)bits.push(r.notes);return '<div>סט '+r.set_number+': '+esc(bits.join(' · '))+'</div>';}).join('');
+ const lines=p.rows.map(r=>{const bits=[];if(r.load_text)bits.push(r.load_text);if(r.reps_text)bits.push(r.reps_text+' '+(e.metric_type==='distance'&&!p.legacy?'מטרים':e.exercise_key==='band_lateral_walk'?'צעדים':'חזרות'));if(r.duration_seconds)bits.push(r.duration_seconds+' שניות');if(r.rir_text)bits.push('RIR '+r.rir_text);const detail=P.setDetails(r.notes);if(detail.plates)bits.push('פלטות בכל צד: '+detail.plates);if(detail.note)bits.push(detail.note);return '<div>סט '+r.set_number+': '+esc(bits.join(' · '))+'</div>';}).join('');
  const note=p.s.exercise_notes?.[p.rows[0]?.slot_id||e.slot_id]||p.s.exercise_notes?.[e.exercise_key];
  const label=p.legacy?'תיעוד קודם ללא ציון החלופה / אופן המדידה':'בפעם האחרונה';
  return '<div class="previous"><strong>'+label+' · '+esc(p.s.performed_at)+'</strong>'+lines+(!p.rows.length?'<div>סומן כבוצע, ללא נתוני סטים.</div>':'')+(note?'<div>'+esc(note)+'</div>':'')+'</div>';
@@ -43,7 +44,7 @@ function cardHtml(e,values=[]){
 }
 function itemFor(card){return state.items.find(e=>e.slot_id===card.dataset.slot);}
 function cardFor(slot){return document.querySelector('.exercise[data-slot="'+CSS.escape(slot)+'"]');}
-function readCard(card){const e=itemFor(card);return {...e,exercise_note:card.querySelector('.exercise-note').value.trim(),sets:[...card.querySelectorAll('.setrow')].map((r,i)=>({set_number:i+1,load_text:r.querySelector('.load').value.trim(),reps_text:e.metric_type.startsWith('seconds')?'':r.querySelector('.metric').value.trim(),duration_seconds:e.metric_type.startsWith('seconds')?r.querySelector('.metric').value.trim():'',rir_text:r.querySelector('.rir').value.trim(),notes:r.dataset.direction||''}))};}
+function readCard(card){const e=itemFor(card);return {...e,exercise_note:card.querySelector('.exercise-note').value.trim(),sets:[...card.querySelectorAll('.setrow')].map((r,i)=>({set_number:i+1,load_text:r.querySelector('.load').value.trim(),reps_text:e.metric_type.startsWith('seconds')?'':r.querySelector('.metric').value.trim(),duration_seconds:e.metric_type.startsWith('seconds')?r.querySelector('.metric').value.trim():'',rir_text:r.querySelector('.rir').value.trim(),notes:P.setNotes(r.querySelector('.plates')?.value.trim()||'',r.dataset.note||r.dataset.direction||'')}))};}
 function hasInput(card){return !!card.querySelector('.complete-toggle:checked')||[...card.querySelectorAll('input,textarea')].some(i=>i.type!=='checkbox'&&i.value.trim());}
 function setCompleted(card,on){card.classList.toggle('completed',!!on);card.querySelector('.complete-toggle').checked=!!on;}
 function bindCard(card){
@@ -58,10 +59,10 @@ function bindCard(card){
  });
  bindCopies(card);
 }
-function bindCopies(root){root.querySelectorAll('.copy-prev').forEach(b=>b.onclick=()=>{const r=b.closest('.setrow'),prev=r.previousElementSibling;['load','metric','rir'].forEach(k=>r.querySelector('.'+k).value=prev.querySelector('.'+k).value);changed();});}
+function bindCopies(root){root.querySelectorAll('.copy-prev').forEach(b=>b.onclick=()=>{const r=b.closest('.setrow'),prev=r.previousElementSibling;['load','metric','rir','plates'].forEach(k=>{const input=r.querySelector('.'+k);if(input)input.value=prev.querySelector('.'+k).value;});changed();});}
 function collect(keepEmpty=false){
  const all=[...document.querySelectorAll('.exercise')].map(readCard);
- const exercises=all.map(e=>({...e,sets:e.sets.filter(r=>keepEmpty||r.load_text||r.reps_text||r.duration_seconds||r.rir_text)})).filter(e=>keepEmpty||e.sets.length||e.exercise_note);
+ const exercises=all.map(e=>({...e,sets:e.sets.filter(r=>keepEmpty||r.load_text||r.reps_text||r.duration_seconds||r.rir_text||P.setDetails(r.notes).plates||(e.exercise_key!=='impact_jumps'&&P.setDetails(r.notes).note))})).filter(e=>keepEmpty||e.sets.length||e.exercise_note);
  const extras=state.extras.map(x=>({...x}));
  if(state.program!==P.KEY)for(const [key,note] of Object.entries(state.legacyMetadata||{}))exercises.push({slot_id:key,exercise_key:key,exercise_name:'אפשרויות האימון הקודם',exercise_note:note,sets:[]});
  const meta={variants:Object.fromEntries(all.filter(e=>e.options?.length>1).map(e=>[e.slot_id,e.exercise_key])),extras,impact:all.some(e=>e.exercise_key==='impact_jumps')};
@@ -75,7 +76,7 @@ function hasWorkoutData(d){
  if(String(d.duration_minutes??'').trim()||String(d.notes??'').trim())return true;
  return Array.isArray(d.exercises)&&d.exercises.some(e=>{
   if(!e||String(e.exercise_key||'').startsWith('__'))return false;
-  return !!String(e.exercise_note??'').trim()||(Array.isArray(e.sets)&&e.sets.some(r=>r&&['load_text','reps_text','duration_seconds','rir_text'].some(k=>String(r[k]??'').trim())));
+  return !!String(e.exercise_note??'').trim()||(Array.isArray(e.sets)&&e.sets.some(r=>r&&(['load_text','reps_text','duration_seconds','rir_text'].some(k=>String(r[k]??'').trim())||P.setDetails(r.notes).plates||(e.exercise_key!=='impact_jumps'&&P.setDetails(r.notes).note))));
  });
 }
 // Keep intentional exercise choices without mislabeling them as unfinished workouts.
@@ -221,7 +222,7 @@ function closeModal(id){$(id).classList.add('hidden');if(!document.querySelector
 function openHistory(offset=0){
  state.historyOffset=offset;const now=new Date();now.setHours(12,0,0,0);now.setDate(now.getDate()-now.getDay()+offset*7);const end=new Date(now);end.setDate(now.getDate()+6);const a=formatDate(now),b=formatDate(end);
  const sessions=P.sorted(state.data.history).filter(s=>s.performed_at>=a&&s.performed_at<=b);
- $('#pastWeekContent').innerHTML='<div class="history-nav"><button class="small" id="historyPrev">השבוע הקודם</button><strong>'+esc(a)+' — '+esc(b)+'</strong><button class="small" id="historyNext"'+(offset>=0?' disabled':'')+'>הבא</button></div>'+(sessions.length?sessions.map(s=>'<details class="history-session"><summary>'+esc(s.performed_at)+' · '+esc(programLabel(s.program_key))+' '+esc(s.workout_code)+(s.duration_minutes?' · '+s.duration_minutes+' דקות':'')+'</summary>'+[...new Set((s.sets||[]).map(r=>r.exercise_key))].map(k=>'<p><strong>'+esc(s.sets.find(r=>r.exercise_key===k).exercise_name)+'</strong><br>'+s.sets.filter(r=>r.exercise_key===k).map(r=>esc([r.load_text,r.reps_text&&r.reps_text+' '+metricLabel(P.catalog[k]?.metric_type||(s.program_snapshot||[]).find(e=>e.exercise_key===k)?.metric_type),r.duration_seconds&&r.duration_seconds+' שניות',r.rir_text&&'RIR '+r.rir_text].filter(Boolean).join(' · '))).join('<br>')+'</p>').join('')+(s.notes?'<p>'+esc(s.notes)+'</p>':'')+'<button class="small" data-edit="'+esc(s.id)+'">עריכת האימון</button></details>').join(''):'<p class="muted">אין אימונים מתועדים בשבוע הזה.</p>')+(window.WorkoutInsights?.weeklyHtml(sessions)||'');
+ $('#pastWeekContent').innerHTML='<div class="history-nav"><button class="small" id="historyPrev">השבוע הקודם</button><strong>'+esc(a)+' — '+esc(b)+'</strong><button class="small" id="historyNext"'+(offset>=0?' disabled':'')+'>הבא</button></div>'+(sessions.length?sessions.map(s=>'<details class="history-session"><summary>'+esc(s.performed_at)+' · '+esc(programLabel(s.program_key))+' '+esc(s.workout_code)+(s.duration_minutes?' · '+s.duration_minutes+' דקות':'')+'</summary>'+[...new Set((s.sets||[]).map(r=>r.exercise_key))].map(k=>'<p><strong>'+esc(s.sets.find(r=>r.exercise_key===k).exercise_name)+'</strong><br>'+s.sets.filter(r=>r.exercise_key===k).map(r=>esc([r.load_text,r.reps_text&&r.reps_text+' '+metricLabel(P.catalog[k]?.metric_type||(s.program_snapshot||[]).find(e=>e.exercise_key===k)?.metric_type),r.duration_seconds&&r.duration_seconds+' שניות',r.rir_text&&'RIR '+r.rir_text,P.setDetails(r.notes).plates&&'פלטות בכל צד: '+P.setDetails(r.notes).plates,P.setDetails(r.notes).note].filter(Boolean).join(' · '))).join('<br>')+'</p>').join('')+(s.notes?'<p>'+esc(s.notes)+'</p>':'')+'<button class="small" data-edit="'+esc(s.id)+'">עריכת האימון</button></details>').join(''):'<p class="muted">אין אימונים מתועדים בשבוע הזה.</p>')+(window.WorkoutInsights?.weeklyHtml(sessions)||'');
  $('#historyPrev').onclick=()=>openHistory(offset-1);$('#historyNext').onclick=()=>openHistory(offset+1);
  $('#pastWeekContent').querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const s=state.data.history.find(x=>x.id===btn.dataset.edit);closeModal('#pastWeekModal');openWorkout({program:s.program_key,workout:s.workout_code,date:s.performed_at,saved:s});});openModal('#pastWeekModal');
 }
@@ -230,6 +231,7 @@ async function save(){
  const payload=collect();
  if(!payload.completed_exercises.length&&!payload.exercises.some(e=>!e.exercise_key.startsWith('__')&&(e.sets.length||e.exercise_note))&&!payload.notes&&!payload.duration_minutes){$('#status').textContent='יש לסמן ביצוע או להזין נתון לפני השמירה.';return;}
  if(payload.duration_minutes&&(!Number.isInteger(Number(payload.duration_minutes))||+payload.duration_minutes<1||+payload.duration_minutes>300)){$('#status').textContent='משך האימון צריך להיות בין 1 ל־300 דקות.';return;}
+ if(payload.exercises.some(e=>e.sets.some(r=>r.notes.length>500))){$('#status').textContent='תיאור הפלטות וההערה לסט ארוכים מדי. קצרי את תיאור הפלטות לפני השמירה.';return;}
  clearTimeout(state.timer);const draftSaved=storage.set(draftKey(),collect(true));state.saving=true;const controls=[...document.querySelectorAll('#strengthScreen input,#strengthScreen textarea,#strengthScreen button,#strengthScreen select,.top button,.top input,#saveBtn')];controls.forEach(x=>x.disabled=true);$('#status').textContent='שומרת…';
  try{
   const d=await call('save',{method:'POST',body:JSON.stringify(payload)});state.revision=d.revision;state.dirty=false;storage.remove(draftKey());
